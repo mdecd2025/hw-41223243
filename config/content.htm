@@ -25,49 +25,50 @@
 <p>這段程式碼是基於 <strong data-end="20" data-start="9">Brython</strong> 開發的，目的是從一個指定的 URL (<code data-end="68" data-start="40">https://mde.tw/list/2b.txt</code>) 讀取學員的學號與帳號資料，並根據提供的學號清單顯示每位學員的帳號與對應的 GitHub 倉儲連結。如果帳號名稱與學號不一致，它會使用帳號名稱來生成 GitHub 倉儲 URL，反之則使用學號生成 URL。</p>
 <p>以當前來說是夠用的。</p>
 <p>以下為三版。</p>
-<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from browser import html, document, window
-
+<p> </p>
+<pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">from browser import html, document, window
+   
 # 設定資料來源 URL
 url = "https://mde.tw/list/2b.txt"
-
+   
 # 特定學員的學號列表
 target_student_ids = ["41223243", "41223221", "41223211", "41223245", "41223251", "41223212"]  # 您指定的學號
-
+   
 # 利用 AJAX 來讀取遠端資料
 def fetch_data():
     # 使用 window.XMLHttpRequest 發送 HTTP GET 請求來讀取資料
     xhr = window.XMLHttpRequest.new()
     xhr.open("GET", url, True)
-    
+       
     # 定義資料載入完成後的處理邏輯
     def onload(event):
         # 檢查 HTTP 請求是否成功
         if xhr.status == 200:
             # 取得返回的資料
             data = xhr.responseText.splitlines()
-            
+               
             # 進行診斷，確保資料格式正確
             print(f"載入的資料：{data}")
-
+   
             # 跳過標題行，獲取有效學員資料
             all_stud = data[1:]  # 跳過標題行
             print(f"有效學員資料：{all_stud}")
-
+   
             # 顯示資料
             brython_div1 = document["brython_div1"]
-
+   
             # 清空顯示區域，避免重複顯示
             brython_div1.clear()
-
+   
             # 顯示特定學員資料及超連結
             found_count = 0  # 記錄找到的學員數量
-
+   
             for idx, stud in enumerate(all_stud, 1):
                 # 假設每一行資料格式為 "學號 帳號"
                 stud_info = stud.strip().split()
                 if len(stud_info) == 2:  # 確保格式正確
                     student_id, account = stud_info
-                    
+                       
                     # 檢查該學號是否在目標學號列表中
                     if student_id in target_student_ids:
                         # 檢查學號與帳號名稱是否一致
@@ -77,25 +78,25 @@ def fetch_data():
                         else:
                             # 如果一致，使用學號來生成倉儲 URL
                             link = f"https://github.com/mdecd2025/hw-{student_id}"
-                        
+                           
                         brython_div1 &lt;= html.BR()
                         brython_div1 &lt;= f"{idx}. 學號: {student_id} 帳號: " + html.A(account, href=link)
-
+   
                         found_count += 1
-
+   
             # 如果沒有找到學員資料，顯示提示信息
             if found_count == 0:
                 brython_div1 &lt;= html.BR()
                 brython_div1 &lt;= "未找到指定學號的資料。"
-
+   
     # 設定載入完成時的回呼
     xhr.bind("load", onload)
     xhr.send()
-
+   
 # 進行資料讀取
-fetch_data()
-</pre>
-<p></p>
+fetch_data()</pre>
+<p><br/><br/></p>
+<p><br/><br/></p>
 <p></p><h2>task2</h2>
 <p>排錯中。</p><h2>task3</h2>
 <h2>task4</h2>
