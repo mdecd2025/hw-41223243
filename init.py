@@ -13,7 +13,7 @@ class Init(object):
     site_title = "cd_hw"
     ip = "2001:288:6004:17:fff1:cd25:0:b053"
     dynamic_port = 9443
-    static_port = 8443
+    static_port = 8000
     def __init__(self):
         # hope to create downloads and images directories　
         if not os.path.isdir(_curdir + "/downloads"):
