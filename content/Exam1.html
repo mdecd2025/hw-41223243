@@ -146,7 +146,40 @@ img.add_border {
 <p>Exam1 (10%): 建立 Webots 基本物件模擬場景</p>
 <p>操作影片標題: 國立虎尾科技大學 - 機械設計工程系 - cd2025 Exam1 - 學員學號</p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/RBXYfik3aLY?si=fUSpR2aLyh6vX-tA" title="YouTube video player" width="560"></iframe></p>
-<p></p><br />Exam << <a href='Exam.html'>Previous</a> <a href='Exam2.html'>Next</a> >> Exam2</div>
+<p>操作流程:</p>
+<p>建造一個robot，然後於children中增加兩個hinge joint與1個solid。</p>
+<p>於solid的部分，將其改名為base，並於solid的<span>children，右鍵新增一個shape，然後於geometry處對他按右鍵新增</span><span>box，將X的部分調為1米。</span></p>
+<p><span>※之後將不再贅述建立box的步驟。</span></p>
+<p><span>任選一hinge joint，將選擇的hinge joint改名為hinge joint1，另一個改名為hinge joint4。<br/></span></p>
+<p>進入hinge joint1的主線程下方，選擇它的endpoint右鍵新增<span>solid，然後調整數值，如下圖。</span></p>
+<p><span><img alt="" height="92" src="./../images/1.png" width="255"/></span></p>
+<p><span>※注意rotation的部分是需要根據學號來進行調整，本人最後兩碼43，轉成rad就是0.7505rad。</span></p>
+<p><span>然後children處新增pose與hinge joint，將hinge joint改名為joint2。</span></p>
+<p><span></span>pose與其shape中的box如下</p>
+<p>一號link</p>
+<p><img alt="" height="285" src="./../images/2.png" width="350"/></p>
+<p>然後是joint2的部分與joint1的步驟相同，一樣在children新增solid然後建立pose(box中心)以及一個hinge joint，然後改名為joint3，然後建立第三個box。</p>
+<p>二號link(下方第二章圖是短桿部分的設定)</p>
+<p><img alt="" height="231" src="./../images/3.png" width="266"/><img alt="" height="233" src="./../images/4.png" width="250"/></p>
+<p>三號link</p>
+<p><img alt="" height="267" src="./../images/5.png" width="353"/></p>
+<p>至此box部分結束，接著開始設置jointparameters部分。</p>
+<p>joint1的部分</p>
+<p><img alt="" height="90" src="./../images/6.png" width="347"/></p>
+<p>除此之外，還要再joint1放置一個旋轉馬達，並命名為motor(控制程式中的命名)</p>
+<p>joint2的部分</p>
+<p><img alt="" height="88" src="./../images/7.png" width="331"/></p>
+<p>joint3的部分</p>
+<p><img alt="" height="90" src="./../images/8.png" width="308"/></p>
+<p>然後是幫link1、link2、link3建立boundingObject</p>
+<p>link1的boundingObject</p>
+<p><img alt="" height="162" src="./../images/9.png" width="277"/></p>
+<p><span>link2的</span><span>boundingObject</span></p>
+<p><span><img alt="" height="164" src="./../images/10.png" width="242"/></span></p>
+<p><span>link3的<span>boundingObject</span></span></p>
+<p><span><span><img alt="" height="169" src="./../images/11.png" width="297"/></span></span></p>
+<p>以上設置完成後套入<a href="./../downloads/fourbar_controller6.zip">這個控制程式</a>(注意請務必放置於controllers當中，且程式名稱需與資料夾相同)然後在robot的controlle當中開啟即可以模擬。</p>
+<p><img alt="" height="311" src="./../images/12.png" width="264"/></p><br />Exam << <a href='Exam.html'>Previous</a> <a href='Exam2.html'>Next</a> >> Exam2</div>
         
     <!-- footer -->
       <div class="container">
