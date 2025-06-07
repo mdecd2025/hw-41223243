@@ -146,9 +146,39 @@ fetch_data()</pre>
 <h2>HW1</h2>
 <p>HW1 (5%): <span style="background-color: #ffff00;">建立由 Box 組成的平面四連桿機構 Webots 模擬場景</span></p>
 <p>操作影片標題: 國立虎尾科技大學 - 機械設計工程系 - cd2025 HW1 - 學員學號</p>
+<p>建造一個robot，然後於children中增加兩個hinge joint與1個solid。</p>
+<p>於solid的部分，將其改名為base，並於solid的<span>children，右鍵新增一個shape，然後於geometry處對他按右鍵新增</span><span>box，將X的部分調為1米。</span></p>
+<p><span>※之後將不再贅述建立box的步驟。</span></p>
+<p><span>任選一hinge joint，將選擇的hinge joint改名為hinge joint1，另一個改名為hinge joint4。<br/></span></p>
+<p>進入hinge joint1的主線程下方，選擇它的endpoint右鍵新增<span>solid，然後調整數值。</span></p>
+<p><span>rotation的部分隨意調整，屬於初始角度。</span></p>
+<p><span>然後children處新增pose與hinge joint，將hinge joint改名為joint2。</span></p>
+<p><span>然後是joint2的部分與joint1的步驟相同，一樣在children新增solid然後建立pose(box中心)以及一個hinge joint，然後改名為joint3，然後建立第三個box</span></p>
+<p>至此box部分結束，接著開始設置jointparameters部分。</p>
+<p><span>jointparameters部分其實就是連趕座標相對於原始座標的位置，即與0.0.0相對的位置，例如link1的座標跟原點相比，往負的X移動0.5m，achor的X部分就改為-0.5m，lin2與3都是這樣設置。</span></p>
+<p><span><span>除此之外，還要再joint1放置一個旋轉馬達，並命名為motor(控制程式中的命名)</span></span></p>
+<p><span><span>然後是幫link1、link2、link3建立boundingObject，這個東西的作用就是定義物品物理碰撞的欄位。</span></span></p>
+<p><span><span>我的設置在下方圖片都可以查看。</span></span></p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/3IBjiNI6vq4?si=JDIRYozS9gNS3QhH" title="YouTube video player" width="560"></iframe></p>
+<p>圖片部分</p>
+<p>link1</p>
+<p><img alt="" height="103" src="/images/HW1-1.png" width="314"/></p>
+<p><img alt="" height="88" src="/images/HW1-1-1.png" width="289"/></p>
+<p><span>boundingObject</span></p>
+<p><span><img alt="" height="254" src="/images/HW1-11.png" width="231"/></span></p>
+<p>link2</p>
+<p><img alt="" height="123" src="/images/HW1-2.png" width="323"/></p>
+<p><img alt="" height="93" src="/images/HW1-2-1.png" width="294"/></p>
+<p><span>boundingObject</span></p>
+<p><span><img alt="" height="356" src="/images/HW1-21.png" width="322"/></span></p>
+<p>link3</p>
+<p><img alt="" height="112" src="/images/HW1-3.png" width="279"/></p>
+<p><img alt="" height="74" src="/images/HW1-3-1.png" width="258"/></p>
+<p><span>boundingObject</span></p>
+<p><span><img alt="" height="323" src="/images/HW1-31.png" width="232"/></span></p>
+<p>最後是補上joint4。</p>
 <p></p>
-<p>好難<br/>補上影片中未模擬的部分 <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/C6RJA2p2-ss?si=0b2tNsgx8VoAHfl1" title="YouTube video player" width="560"></iframe> <br/><br/></p><h2>HW2</h2>
+<p><br/>補上影片中未模擬的部分 <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/C6RJA2p2-ss?si=0b2tNsgx8VoAHfl1" title="YouTube video player" width="560"></iframe> <br/><br/></p><h2>HW2</h2>
 <p>HW2 (5%): <span style="background-color: #ffff00;">建立由 CAD 繪製零件組成的平面四連桿機構 Webots 模擬場景</span></p>
 <p>操作影片標題: 國立虎尾科技大學 - 機械設計工程系 - cd2025 HW2 - 學員學號</p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/PqlUI7qmsds?si=6eLmgoGC0cYA3AOz" title="YouTube video player" width="560"></iframe></p>
@@ -254,8 +284,10 @@ fetch_data()</pre>
 <p><br/>心得:實際上更多是卡在串流部分，自己在試的時候，經常吃不到規定的ipv6，結果後來檢查儀下才發現沒有把ipv6用[]框住，導致瀏覽器根本讀不到。挺搞笑又挺搞人心態的。</p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/nPcajDfuA2M?si=jpxQX_dkJLxDdXG6" title="YouTube video player" width="560"></iframe></p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/EEGhHzF5vkc?si=MTz_jvfA4hlmx7ev" title="YouTube video player" width="560"></iframe></p>
-<p>exam3-2<br/><br/></p>
+<p>exam3-2</p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/9ylDmU6J8_M?si=mkGHlQ70BMejkv3w" title="YouTube video player" width="560"></iframe></p>
+<p>exam3-3</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/WzaNxooqETE?si=i4RDgmpl5oISBJ_a" title="YouTube video player" width="560"></iframe></p>
 <p></p><h1>Final</h1>
 <p><span>期末協同專案執行過程影片、簡報與 PDf 報告檔案 (六人一組) (30%)</span></p>
 <p><span>題目: <span style="background-color: #ccffcc;">Webots 動態投籃模擬系統的協同設計</span></span></p>
