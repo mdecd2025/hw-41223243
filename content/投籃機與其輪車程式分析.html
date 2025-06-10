@@ -142,45 +142,120 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">Homework << <a href='Homework.html'>Previous</a> <a href='HW2.html'>Next</a> >> HW2<br /><h1>HW1</h1>
-<p>HW1 (5%): <span style="background-color: #ffff00;">建立由 Box 組成的平面四連桿機構 Webots 模擬場景</span></p>
-<p>操作影片標題: 國立虎尾科技大學 - 機械設計工程系 - cd2025 HW1 - 學員學號</p>
-<p>建造一個robot，然後於children中增加兩個hinge joint與1個solid。</p>
-<p>於solid的部分，將其改名為base，並於solid的<span>children，右鍵新增一個shape，然後於geometry處對他按右鍵新增</span><span>box，將X的部分調為1米。</span></p>
-<p><span>※之後將不再贅述建立box的步驟。</span></p>
-<p><span>任選一hinge joint，將選擇的hinge joint改名為hinge joint1，另一個改名為hinge joint4。<br/></span></p>
-<p>進入hinge joint1的主線程下方，選擇它的endpoint右鍵新增<span>solid，然後調整數值。</span></p>
-<p><span>rotation的部分隨意調整，屬於初始角度。</span></p>
-<p><span>然後children處新增pose與hinge joint，將hinge joint改名為joint2。</span></p>
-<p><span>然後是joint2的部分與joint1的步驟相同，一樣在children新增solid然後建立pose(box中心)以及一個hinge joint，然後改名為joint3，然後建立第三個box</span></p>
-<p>至此box部分結束，接著開始設置jointparameters部分。</p>
-<p><span>jointparameters部分其實就是連趕座標相對於原始座標的位置，即與0.0.0相對的位置，例如link1的座標跟原點相比，往負的X移動0.5m，achor的X部分就改為-0.5m，lin2與3都是這樣設置。</span></p>
-<p><span><span>除此之外，還要再joint1放置一個旋轉馬達，並命名為motor(控制程式中的命名)</span></span></p>
-<p><span><span>然後是幫link1、link2、link3建立boundingObject，這個東西的作用就是定義物品物理碰撞的欄位。</span></span></p>
-<p><span><span>我的設置在下方圖片都可以查看。</span></span></p>
-<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/3IBjiNI6vq4?si=JDIRYozS9gNS3QhH" title="YouTube video player" width="560"></iframe></p>
-<p>圖片部分</p>
-<p>link1</p>
-<p><img alt="" height="103" src="./../images/HW1-1.png" width="314"/></p>
-<p><img alt="" height="88" src="./../images/HW1-1-1.png" width="289"/></p>
-<p><span>boundingObject</span></p>
-<p><span><img alt="" height="254" src="./../images/HW1-11.png" width="231"/></span></p>
-<p>link2</p>
-<p><img alt="" height="123" src="./../images/HW1-2.png" width="323"/></p>
-<p><img alt="" height="93" src="./../images/HW1-2-1.png" width="294"/></p>
-<p><span>boundingObject</span></p>
-<p><span><img alt="" height="356" src="./../images/HW1-21.png" width="322"/></span></p>
-<p>link3</p>
-<p><img alt="" height="112" src="./../images/HW1-3.png" width="279"/></p>
-<p><img alt="" height="74" src="./../images/HW1-3-1.png" width="258"/></p>
-<p><span>boundingObject</span></p>
-<p><span><img alt="" height="323" src="./../images/HW1-31.png" width="232"/></span></p>
-<p>最後是補上joint4。</p>
-<p><img alt="" height="326" src="./../images/HW1-4.png" width="294"/></p>
-<p><br/>補上影片中未模擬的部分</p>
+    <div id="tipue_search_content">Final << <a href='Final.html'>Previous</a> <a href='Brython.html'>Next</a> >> Brython<br /><h1>投籃機與其輪車程式分析</h1>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Robot, Keyboard
+
+# Constants
+TIME_STEP = 32
+MAX_VELOCITY = 10.0
+ANGLE_STEP = 40 * 3.14159 / 180  # 40 degrees in radians
+POSITION_M = ANGLE_STEP          # +40 deg
+POSITION_K = 0.0                 # 0 deg
+
+# Initialize robot and keyboard
+robot = Robot()
+timestep = int(robot.getBasicTimeStep())
+keyboard = Keyboard()
+keyboard.enable(timestep)
+
+# Get devices
+try:
+    motor = robot.getDevice('motor1')
+    sensor = robot.getDevice('motor1_sensor')
+    sensor.enable(timestep)
+    mechanism_enabled = True
+except Exception:
+    mechanism_enabled = False
+
+# Wheel setup (if available)
+try:
+    wheels = [robot.getDevice(f"wheel{i+1}") for i in range(4)]
+    for wheel in wheels:
+        wheel.setPosition(float('inf'))  # Infinite position to enable velocity control
+        wheel.setVelocity(0)  # Start with zero velocity
+    platform_enabled = True
+except Exception:
+    platform_enabled = False
+
+# State machine: which key is allowed to trigger
+current_state = "allow_m"  # Start by allowing 'm'
+
+# Key debounce
+key_pressed = {
+    'k': False,
+    'm': False
+}
+
+while robot.step(timestep) != -1:
+    key = keyboard.getKey()
+    
+    # Platform control
+    if platform_enabled:
+        if key == Keyboard.UP:
+            for wheel in wheels:
+                wheel.setVelocity(MAX_VELOCITY)
+        elif key == Keyboard.DOWN:
+            for wheel in wheels:
+                wheel.setVelocity(-MAX_VELOCITY)
+        elif key == Keyboard.LEFT:
+            wheels[0].setVelocity(MAX_VELOCITY)
+            wheels[1].setVelocity(-MAX_VELOCITY)
+            wheels[2].setVelocity(MAX_VELOCITY)
+            wheels[3].setVelocity(-MAX_VELOCITY)
+        elif key == Keyboard.RIGHT:
+            wheels[0].setVelocity(-MAX_VELOCITY)
+            wheels[1].setVelocity(MAX_VELOCITY)
+            wheels[2].setVelocity(-MAX_VELOCITY)
+            wheels[3].setVelocity(MAX_VELOCITY)
+        elif key == ord('Q') or key == ord('q'):
+            print("Exiting...")
+            break
+        else:
+            for wheel in wheels:
+                wheel.setVelocity(0)
+
+    # Motor key control
+    if mechanism_enabled:
+        # Read current motor position (not for relative, but for debug)
+        _current_motor_position = sensor.getValue()
+
+        # M key: only take action if allowed and not held
+        if key == ord('M') or key == ord('m'):
+            if not key_pressed['m'] and current_state == "allow_m":
+                motor.setPosition(POSITION_M)
+                current_state = "allow_k"
+            key_pressed['m'] = True
+        else:
+            key_pressed['m'] = False
+
+        # K key: only take action if allowed and not held
+        if key == ord('K') or key == ord('k'):
+            if not key_pressed['k'] and current_state == "allow_k":
+                motor.setPosition(POSITION_K)
+                current_state = "allow_m"
+            key_pressed['k'] = True
+        else:
+            key_pressed['k'] = False</pre>
+<p>設定馬達要移動的角度值（弧度制）。</p>
+<p>ANGLE_STEP = 40 * 3.14159 / 180 # 約 0.698 rad（40度）<br/>POSITION_M = ANGLE_STEP # 按 M 時設定馬達位置<br/>POSITION_K = 0.0 # 按 K 時設定馬達位置</p>
+<p>嘗試取得名為 <code data-end="701" data-start="691">'motor1'</code> 的旋轉馬達與其對應位置感測器（encoder），若失敗，跳過此功能</p>
+<p>motor = robot.getDevice('motor1')<br/>sensor = robot.getDevice('motor1_sensor')</p>
+<p>按下 <code data-end="887" data-start="884">M</code> 時會讓馬達轉到 40 度，但只有當目前狀態允許（<code data-end="921" data-start="912">allow_m</code>）時才執行。</p>
+<p>一次只能觸發一次：避免按鍵長按重複觸發。</p>
+<p>if key == ord('M') and current_state == "allow_m":<br/> motor.setPosition(POSITION_M)<br/> current_state = "allow_k"</p>
+<p>每個輪子設為無限旋轉（velocity control 模式)</p>
+<p>利用方向鍵控制移動：</p>
+<p><code data-end="1102" data-start="1099">↑</code>：前進</p>
+<p><code data-end="1113" data-start="1110">↓</code>：後退</p>
+<p><code data-end="1124" data-start="1121">←</code>：轉左（左右輪相反方向）</p>
+<p><code data-end="1144" data-start="1141">→</code>：轉右</p>
+<p>防止使用者連續按同一鍵造成重複設定指令。</p>
+<p>current_state = "allow_m" # 只能先按 M<br/># M 按過 → allow_k，K 按過 → allow_m，如此循環</p>
 <p></p>
-<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/C6RJA2p2-ss?si=0b2tNsgx8VoAHfl1" title="YouTube video player" width="560"></iframe> <br/><br/></p>
-<br />Homework << <a href='Homework.html'>Previous</a> <a href='HW2.html'>Next</a> >> HW2</div>
+<p></p>
+<p></p>
+<p></p>
+<br />Final << <a href='Final.html'>Previous</a> <a href='Brython.html'>Next</a> >> Brython</div>
         
     <!-- footer -->
       <div class="container">

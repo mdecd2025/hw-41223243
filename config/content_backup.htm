@@ -301,9 +301,108 @@ fetch_data()</pre>
 <p><span>說明: </span></p>
 <p style="padding-left: 30px;"><span>籃框架被配置在一定範圍內, 可隨機慢速前進、後退及左右擺動, 投籃機構系統帶有一定數量的籃球, 被配置在可自由移動的輪車上.</span></p>
 <p style="padding-left: 30px;"><span>操作者可利用鍵盤特定按鍵控制投籃輪車的移動並發射投籃, 每投出一球後系統透過記分板進行計分, 並由送球機構進行補球或移動輪車取球, 遊戲可進行至全部數量籃球投完為止.</span></p>
+<p style="padding-left: 30px;"><span></span></p>
 <p>請將期末協同專案執行過程、內容與心得, 製作成影片，配合字幕上傳至 Youtube 後嵌入各階段的期末報告頁面中.</p>
 <p>影片標題: <span style="background-color: #ffff00;">國立虎尾科技大學 - 機械設計工程系 - cd2025 期末報告 - 學員學號 - 各階段影片主題<br/></span></p>
-<h1>Brython</h1>
+<p></p>
+<p>還沒完成</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/12J9qm32pJQ?si=ZsESO3Hz3WGIHrWh" title="YouTube video player" width="560"></iframe></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/nA7_NVboh0s?si=gEi4-YDAco3UVh4T" title="YouTube video player" width="560"></iframe></p>
+<p>藉由M跟K來控制投球機的發射，而上下左右則可以控制投球機下方的輪車移動。</p>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Robot, Keyboard
+
+# Constants
+TIME_STEP = 32
+MAX_VELOCITY = 10.0
+ANGLE_STEP = 40 * 3.14159 / 180  # 40 degrees in radians
+POSITION_M = ANGLE_STEP          # +40 deg
+POSITION_K = 0.0                 # 0 deg
+
+# Initialize robot and keyboard
+robot = Robot()
+timestep = int(robot.getBasicTimeStep())
+keyboard = Keyboard()
+keyboard.enable(timestep)
+
+# Get devices
+try:
+    motor = robot.getDevice('motor1')
+    sensor = robot.getDevice('motor1_sensor')
+    sensor.enable(timestep)
+    mechanism_enabled = True
+except Exception:
+    mechanism_enabled = False
+
+# Wheel setup (if available)
+try:
+    wheels = [robot.getDevice(f"wheel{i+1}") for i in range(4)]
+    for wheel in wheels:
+        wheel.setPosition(float('inf'))  # Infinite position to enable velocity control
+        wheel.setVelocity(0)  # Start with zero velocity
+    platform_enabled = True
+except Exception:
+    platform_enabled = False
+
+# State machine: which key is allowed to trigger
+current_state = "allow_m"  # Start by allowing 'm'
+
+# Key debounce
+key_pressed = {
+    'k': False,
+    'm': False
+}
+
+while robot.step(timestep) != -1:
+    key = keyboard.getKey()
+    
+    # Platform control
+    if platform_enabled:
+        if key == Keyboard.UP:
+            for wheel in wheels:
+                wheel.setVelocity(MAX_VELOCITY)
+        elif key == Keyboard.DOWN:
+            for wheel in wheels:
+                wheel.setVelocity(-MAX_VELOCITY)
+        elif key == Keyboard.LEFT:
+            wheels[0].setVelocity(MAX_VELOCITY)
+            wheels[1].setVelocity(-MAX_VELOCITY)
+            wheels[2].setVelocity(MAX_VELOCITY)
+            wheels[3].setVelocity(-MAX_VELOCITY)
+        elif key == Keyboard.RIGHT:
+            wheels[0].setVelocity(-MAX_VELOCITY)
+            wheels[1].setVelocity(MAX_VELOCITY)
+            wheels[2].setVelocity(-MAX_VELOCITY)
+            wheels[3].setVelocity(MAX_VELOCITY)
+        elif key == ord('Q') or key == ord('q'):
+            print("Exiting...")
+            break
+        else:
+            for wheel in wheels:
+                wheel.setVelocity(0)
+
+    # Motor key control
+    if mechanism_enabled:
+        # Read current motor position (not for relative, but for debug)
+        _current_motor_position = sensor.getValue()
+
+        # M key: only take action if allowed and not held
+        if key == ord('M') or key == ord('m'):
+            if not key_pressed['m'] and current_state == "allow_m":
+                motor.setPosition(POSITION_M)
+                current_state = "allow_k"
+            key_pressed['m'] = True
+        else:
+            key_pressed['m'] = False
+
+        # K key: only take action if allowed and not held
+        if key == ord('K') or key == ord('k'):
+            if not key_pressed['k'] and current_state == "allow_k":
+                motor.setPosition(POSITION_K)
+                current_state = "allow_m"
+            key_pressed['k'] = True
+        else:
+            key_pressed['k'] = False</pre>
+<p></p><h1>Brython</h1>
 <p><button id="add1to100">1 add to 100</button></p>
 <!-- 導入 brython 程式庫 -->
 <p>
