@@ -236,6 +236,7 @@ while robot.step(timestep) != -1:
             key_pressed['k'] = True
         else:
             key_pressed['k'] = False</pre>
+<p><a href="./../downloads/fourbar_controller.zip">fourbar_controller.zip</a></p>
 <p>設定馬達要移動的角度值（弧度制）。</p>
 <p>ANGLE_STEP = 40 * 3.14159 / 180 # 約 0.698 rad（40度）<br/>POSITION_M = ANGLE_STEP # 按 M 時設定馬達位置<br/>POSITION_K = 0.0 # 按 K 時設定馬達位置</p>
 <p>嘗試取得名為 <code data-end="701" data-start="691">'motor1'</code> 的旋轉馬達與其對應位置感測器（encoder），若失敗，跳過此功能</p>
@@ -251,7 +252,7 @@ while robot.step(timestep) != -1:
 <p><code data-end="1144" data-start="1141">→</code>：轉右</p>
 <p>防止使用者連續按同一鍵造成重複設定指令。</p>
 <p>current_state = "allow_m" # 只能先按 M<br/># M 按過 → allow_k，K 按過 → allow_m，如此循環</p>
-<br />Final << <a href='Final.html'>Previous</a> <a href='Supervisor 控制程式分析.html'>Next</a> >> Supervisor 控制程式分析</div>
+<p></p><br />Final << <a href='Final.html'>Previous</a> <a href='Supervisor 控制程式分析.html'>Next</a> >> Supervisor 控制程式分析</div>
         
     <!-- footer -->
       <div class="container">

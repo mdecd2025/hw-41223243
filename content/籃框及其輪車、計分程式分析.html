@@ -143,9 +143,216 @@ img.add_border {
           
         </header>
     <div id="tipue_search_content">Supervisor 控制程式分析 << <a href='Supervisor 控制程式分析.html'>Previous</a> <a href='Brython.html'>Next</a> >> Brython<br /><h1>籃框及其輪車、計分程式分析</h1>
-<p>333</p>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Robot, Keyboard
+
+# Constants
+#TIME_STEP = 32  # Simulation time step in milliseconds
+WHEEL_RADIUS = 0.1  # Radius of the wheels in meters (10cm)
+L = 0.471  # Half of the robot's length in meters
+W = 0.376  # Half of the robot's width in meters
+MAX_VELOCITY = 10.0  # Maximum velocity allowed for the wheels
+
+# Initialize the robot
+robot = Robot()
+
+# Get simulation time step
+timestep = int(robot.getBasicTimeStep())
+emitter = robot.getDevice("score_emitter")
+score_to_send = 2  # 每次加分2分，可依實際得分修改
+
+# Get the DistanceSensor device
+sensor = robot.getDevice('sensor')
+sensor.enable(timestep)
+score = 0
+last_score_time = 0
+cooldown = 1.0
+
+# Initialize the keyboard
+keyboard = Keyboard()
+#keyboard.enable(TIME_STEP)
+keyboard.enable(timestep)
+
+
+# Get motor devices
+wheel5 = robot.getDevice("wheel5")  # Front-right wheel
+wheel6 = robot.getDevice("wheel6")  # Front-left wheel
+wheel7 = robot.getDevice("wheel7")  # Rear-right wheel
+wheel8 = robot.getDevice("wheel8")  # Rear-left wheel
+
+# Set motors to velocity control mode
+for wheel in [wheel5, wheel6, wheel7, wheel8]:
+    wheel.setPosition(float('inf'))  # Enable velocity control
+    wheel.setVelocity(0)  # Set initial velocity to 0
+
+def set_wheel_velocity(v1, v2, v3, v4):
+    """Set the velocity of all wheels."""
+    wheel5.setVelocity(v1)
+    wheel6.setVelocity(v2)
+    wheel7.setVelocity(v3)
+    wheel8.setVelocity(v4)
+
+# lookupTable 轉成程式用的格式
+lookup_table = [
+    (1000, 0.00),
+    (620, 0.12),
+    (372, 0.13),
+    (248, 0.14),
+    (186, 0.15),
+    (0, 0.18)
+]
+
+def ad_to_distance(ad_value):
+    # 假設AD值遞減，距離遞增
+    for i in range(len(lookup_table)-1):
+        a0, d0 = lookup_table[i]
+        a1, d1 = lookup_table[i+1]
+        if a1 &lt;= ad_value &lt;= a0:
+            # 線性插值
+            return d0 + (d1 - d0) * (ad_value - a0) / (a1 - a0)
+    # 超出範圍時回傳極值
+    if ad_value &gt; lookup_table[0][0]:
+        return lookup_table[0][1]
+    return lookup_table[-1][1]
+    
+# Main loop
+print("Use 'E', 'X', 'S', 'D' keys to control the robot.")
+print("E: Move forward, X: Move backward, S: Turn left, D: Turn right.")
+print("Press 'Q' to quit.")
+
+#while robot.step(TIME_STEP) != -1:
+while robot.step(timestep) != -1:
+
+    key = keyboard.getKey()  # Read the key pressed
+    # Read DistanceSensor value
+    sensor_value = sensor.getValue()
+    #print(sensor_value)
+    distance = ad_to_distance(sensor_value)
+    current_time = robot.getTime()
+    #print(sensor_value)
+    # Check if the ball blocks the sensor (you may need to adjust the threshold based on your sensor's range)
+    if key == ord('M') or key == ord('m'):
+        print(distance)
+    if key == ord('K') or key == ord('k'):
+        print(distance)
+
+    if distance &lt; 0.11 and (current_time - last_score_time) &gt; cooldown:
+        score +=2
+        print("得分")
+        print(distance)
+        # 假設你偵測到某事件得分時才送出
+        emitter.send(str(score_to_send).encode('utf-8'))
+
+
+    if key == ord('E') or key == ord('e'):
+        # Move forward
+        velocity = MAX_VELOCITY
+        set_wheel_velocity(velocity, velocity, velocity, velocity)
+    elif key == ord('X') or key == ord('x'):
+        # Move backward
+        velocity = -MAX_VELOCITY
+        set_wheel_velocity(velocity, velocity, velocity, velocity)
+    elif key == ord('D') or key == ord('d'):
+        # Turn right
+        velocity = MAX_VELOCITY
+        set_wheel_velocity(-velocity, velocity, -velocity, velocity)
+    elif key == ord('S') or key == ord('s'):
+        # Turn left
+        velocity = MAX_VELOCITY
+        set_wheel_velocity(velocity, -velocity, velocity, -velocity)
+    elif key == ord('Q') or key == ord('q'):
+        # Quit the program
+        print("Exiting...")
+        break
+    else:
+        # Stop the wheels when no key is pressed
+        set_wheel_velocity(0, 0, 0, 0)</pre>
+<p><a href="./../downloads/stand_controller.zip">stand_controller.zip</a></p>
+<p>初始化區</p>
+<p>robot = Robot()<br/>timestep = int(robot.getBasicTimeStep())</p>
 <p></p>
-<br/><br/><br/><br/><strong data-end="42" data-start="17">Supervisor controller</strong> 控制器
+<ul>
+<li data-end="394" data-start="366">
+<p data-end="394" data-start="368"><code data-end="375" data-start="368">robot</code> 是 Webots 控制器的核心物件。</p>
+</li>
+<li data-end="417" data-start="395">
+<p data-end="417" data-start="397"><code data-end="407" data-start="397">timestep</code> 是模擬的時間間隔。</p>
+</li>
+</ul>
+<p>設備取得與啟用</p>
+<p>emitter = robot.getDevice("score_emitter")<br/>sensor = robot.getDevice('sensor')<br/>sensor.enable(timestep)</p>
+<p></p>
+<ul>
+<li data-end="589" data-start="559">
+<p data-end="589" data-start="561"><code data-end="576" data-start="561">score_emitter</code>：用來傳送得分的通訊裝置。</p>
+</li>
+<li data-end="621" data-start="590">
+<p data-end="621" data-start="592"><code data-end="600" data-start="592">sensor</code>：距離感測器，測量前方是否有物體（如球）。</p>
+</li>
+</ul>
+<p>控制輪子馬達</p>
+<p>wheel5 = robot.getDevice("wheel5") # 前右輪<br/>wheel6 = robot.getDevice("wheel6") # 前左輪<br/>wheel7 = robot.getDevice("wheel7") # 後右輪<br/>wheel8 = robot.getDevice("wheel8") # 後左輪</p>
+<p></p>
+<ul>
+<li data-end="857" data-start="828">
+<p data-end="857" data-start="830">這些是輪子馬達，命名方式符合 Webots 預設定義。</p>
+</li>
+<li data-end="886" data-start="858">
+<p data-end="886" data-start="860">之後會用 <code data-end="880" data-start="865">setVelocity()</code> 控制移動。</p>
+</li>
+</ul>
+<p>鍵盤控制說明</p>
+<p>keyboard = Keyboard()<br/>keyboard.enable(timestep)</p>
+<p>啟用鍵盤輸入，讓使用者透過鍵盤操控。</p>
+<p>感測器轉距離的 lookup 表</p>
+<p>lookup_table = [<br/> (1000, 0.00),<br/> (620, 0.12),<br/> ...<br/>]</p>
+<p></p>
+<ul>
+<li data-end="1133" data-start="1104">
+<p data-end="1133" data-start="1106">感測器回傳的是「AD 值」（類比值），不是公分或公尺。</p>
+</li>
+<li data-end="1187" data-start="1134">
+<p data-end="1187" data-start="1136"><code data-end="1162" data-start="1136">ad_to_distance(ad_value)</code> 函數將 AD 值轉換為實際距離（透過線性插值）。</p>
+</li>
+</ul>
+<p>主迴圈：偵測 + 操控</p>
+<p>while robot.step(timestep) != -1:</p>
+<p data-end="1273" data-start="1265">每次 step：</p>
+<ul data-end="1362" data-start="1274">
+<li data-end="1300" data-start="1274">
+<p data-end="1300" data-start="1276">檢查鍵盤按鍵 → 控制移動（E/X/S/D）</p>
+</li>
+<li data-end="1328" data-start="1301">
+<p data-end="1328" data-start="1303">讀取距離感測器 → 如果太近且冷卻結束，就得分</p>
+</li>
+<li data-end="1347" data-start="1329">
+<p data-end="1347" data-start="1331">按 <code data-end="1340" data-start="1335">M/K</code> 顯示目前距離</p>
+</li>
+<li data-end="1362" data-start="1348">
+<p data-end="1362" data-start="1350">按 <code data-end="1357" data-start="1354">Q</code> 離開模擬</p>
+</li>
+</ul>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p>得分邏輯</p>
+<p>if distance &lt; 0.11 and (current_time - last_score_time) &gt; cooldown:</p>
+<p data-end="1512" data-start="1469">若感測距離小於 0.11 公尺（表示前方有球），而且距離上次得分已經過了 1 秒，則：</p>
+<ul data-end="1566" data-start="1515">
+<li data-end="1532" data-start="1515">
+<p data-end="1532" data-start="1517">加分（此處預設每次加 2 分）</p>
+</li>
+<li data-end="1566" data-start="1535">
+<p data-end="1566" data-start="1537">透過 emitter 傳送 <code data-end="1566" data-start="1551">score_to_send</code></p>
+</li>
+</ul>
+<p><code data-end="1566" data-start="1551">鍵盤控制對照</code></p>
+<p><code data-end="1566" data-start="1551">E前進</code></p>
+<p><code data-end="1566" data-start="1551">X後退</code></p>
+<p><span face="monospace" style="font-family: monospace;">D向右</span></p>
+<p><span face="monospace" style="font-family: monospace;">S向左</span></p>
+<p><span face="monospace" style="font-family: monospace;">M/K印出目前距離</span></p>
+<p><span face="monospace" style="font-family: monospace;">Q結束模擬</span></p>
 <pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Supervisor
 
 SEGMENTS = [
@@ -205,7 +412,7 @@ while supervisor.step(timestep) != -1:
                 print("訊息格式錯誤:", e)
         receiver.nextPacket()
     set_display(supervisor, score)</pre>
-<p></p>
+<p><a href="./../downloads/counter_supervisor.zip">counter_supervisor.zip</a></p>
 <ul>
 <li data-end="150" data-start="113">
 <p data-end="150" data-start="115">接收來自其他控制器（例如剛剛那台機器人）發送過來的 <strong data-end="149" data-start="141">得分訊息</strong>。</p>
@@ -252,7 +459,17 @@ while supervisor.step(timestep) != -1:
 </ul>
 </li>
 </ul>
-<p></p>
+<ul data-end="1868" data-start="1694">
+<li data-end="1736" data-start="1694">
+<p data-end="1736" data-start="1696">這段程式<strong data-end="1718" data-start="1700">不會產生分數，也不控制機器人</strong>，只負責「接收分數 → 顯示分數」。</p>
+</li>
+<li data-end="1810" data-start="1737">
+<p data-end="1810" data-start="1739">如果要配合上一段程式使用，<strong data-end="1785" data-start="1752">要保證 emitter 對應的 receiver 名稱一致</strong>，像這邊叫 <code data-end="1809" data-start="1791">"score_receiver"</code>。</p>
+</li>
+<li data-end="1868" data-start="1811">
+<p data-end="1868" data-start="1813">如果 7 段顯示器的材質名字對錯了（DEF 名稱沒對上），會顯示 <code data-end="1861" data-start="1846">找不到 XXX 這個DEF</code> 的錯誤訊息。</p>
+</li>
+</ul>
 <p></p>
 <p></p>
 <p></p>

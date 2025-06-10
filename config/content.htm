@@ -412,6 +412,7 @@ while robot.step(timestep) != -1:
             key_pressed['k'] = True
         else:
             key_pressed['k'] = False</pre>
+<p><a href="/downloads/fourbar_controller.zip">fourbar_controller.zip</a></p>
 <p>設定馬達要移動的角度值（弧度制）。</p>
 <p>ANGLE_STEP = 40 * 3.14159 / 180 # 約 0.698 rad（40度）<br/>POSITION_M = ANGLE_STEP # 按 M 時設定馬達位置<br/>POSITION_K = 0.0 # 按 K 時設定馬達位置</p>
 <p>嘗試取得名為 <code data-end="701" data-start="691">'motor1'</code> 的旋轉馬達與其對應位置感測器（encoder），若失敗，跳過此功能</p>
@@ -427,12 +428,529 @@ while robot.step(timestep) != -1:
 <p><code data-end="1144" data-start="1141">→</code>：轉右</p>
 <p>防止使用者連續按同一鍵造成重複設定指令。</p>
 <p>current_state = "allow_m" # 只能先按 M<br/># M 按過 → allow_k，K 按過 → allow_m，如此循環</p>
-<h2>Supervisor 控制程式分析</h2>
-<p>333</p>
-<h2>籃框及其輪車、計分程式分析</h2>
-<p>333</p>
+<p></p><h2>Supervisor 控制程式分析</h2>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Supervisor, Keyboard
+import time
+import random
+import numpy as np
+import re
+
+# ----------------- 參數區 -----------------
+HOOP_CENTER = [0.622, -0.103, 0.742838]
+BALL_DEF_PATTERN = re.compile(r"Sphere_\d+")
+supervisor = Supervisor()
+timestep = int(supervisor.getBasicTimeStep())
+keyboard = Keyboard()
+keyboard.enable(timestep)
+
+sphere_radius = 0.1
+TRAJECTORY_POINT_RADIUS = 0.03      # 軌跡小球半徑
+TRAJECTORY_POINT_STEP = 0.12        # 軌跡點間最小距離
+TRAJECTORY_MAX_POINTS = 5           # 只保留5個軌跡點
+
+waiting_ball_def = None
+waiting_ball_info = None
+last_key_time = 0
+debounce_time = 0.5
+default_feed_pos = (-0.35, 0.0, 0.9)
+PRINT_INTERVAL = 0.2
+
+current_tracked_def = None
+last_print_time = time.time()
+
+# 軌跡資料
+trajectory_points = []  # [(pos, def_name)] 最多五個
+
+def axis_angle_to_rotation_matrix(axis, angle):
+    x, y, z = axis
+    c = np.cos(angle)
+    s = np.sin(angle)
+    C = 1 - c
+    return np.array([
+        [x*x*C + c,   x*y*C - z*s, x*z*C + y*s],
+        [y*x*C + z*s, y*y*C + c,   y*z*C - x*s],
+        [z*x*C - y*s, z*y*C + x*s, z*z*C + c]
+    ])
+
+def generate_valid_def_name(base_name="Sphere"):
+    timestamp = int(supervisor.getTime() * 1000)
+    return f"{base_name}_{timestamp}_{random.randint(0, 10000)}"
+
+def generate_random_color():
+    return random.random(), random.random(), random.random()
+
+def youbot_local_to_world(local_pos):
+    youbot_node = supervisor.getFromDef('youbot')
+    if youbot_node is None:
+        raise RuntimeError("找不到 DEF 為 youbot 的 Robot 物件")
+    youbot_translation = np.array(youbot_node.getField('translation').getSFVec3f())
+    youbot_rotation = youbot_node.getField('rotation').getSFRotation()
+    youbot_axis = youbot_rotation[:3]
+    youbot_angle = youbot_rotation[3]
+    youbot_rot_mat = axis_angle_to_rotation_matrix(youbot_axis, youbot_angle)
+    rotated = youbot_rot_mat @ np.array(local_pos)
+    world_pos = youbot_translation + rotated
+    return tuple(world_pos)
+
+def create_static_ball(def_name, world_pos, r, g, b):
+    sphere_string = f"""
+    DEF {def_name} Solid {{
+      translation {world_pos[0]} {world_pos[1]} {world_pos[2]}
+      contactMaterial "ball"
+      children [
+        Shape {{
+          geometry Sphere {{
+            radius {sphere_radius}
+          }}
+          appearance Appearance {{
+            material Material {{
+              diffuseColor {r} {g} {b}
+            }}
+          }}
+        }}
+      ]
+      boundingObject Sphere {{
+        radius {sphere_radius}
+      }}
+    }}
+    """
+    root = supervisor.getRoot()
+    children_field = root.getField("children")
+    children_field.importMFNodeFromString(-1, sphere_string)
+
+def create_dynamic_ball(def_name, world_pos, r, g, b):
+    sphere_string = f"""
+    DEF {def_name} Solid {{
+      translation {world_pos[0]} {world_pos[1]} {world_pos[2]}
+      contactMaterial "ball"
+      children [
+        Shape {{
+          geometry Sphere {{
+            radius {sphere_radius}
+          }}
+          appearance Appearance {{
+            material Material {{
+              diffuseColor {r} {g} {b}
+            }}
+          }}
+        }}
+      ]
+      boundingObject Sphere {{
+        radius {sphere_radius}
+      }}
+      physics Physics {{
+        mass 0.01
+        density -1
+      }}
+    }}
+    """
+    root = supervisor.getRoot()
+    children_field = root.getField("children")
+    children_field.importMFNodeFromString(-1, sphere_string)
+
+def create_trajectory_point(pos):
+    """
+    在pos位置新增一個小球作為拋物線軌跡點，回傳DEF名稱。
+    用Transform持有Shape，僅作視覺標記，不影響物理。
+    """
+    def_name = generate_valid_def_name("TrajectoryPt")
+    sphere_string = f"""
+    DEF {def_name} Transform {{
+      translation {pos[0]} {pos[1]} {pos[2]}
+      children [
+        Shape {{
+          geometry Sphere {{
+            radius {TRAJECTORY_POINT_RADIUS}
+          }}
+          appearance Appearance {{
+            material Material {{
+              diffuseColor 1 0.7 0
+              transparency 0.3
+            }}
+          }}
+        }}
+      ]
+    }}
+    """
+    root = supervisor.getRoot()
+    children_field = root.getField("children")
+    children_field.importMFNodeFromString(-1, sphere_string)
+    return def_name
+
+def delete_trajectory_points():
+    """刪除所有軌跡點"""
+    global trajectory_points
+    for _, def_name in trajectory_points:
+        node = supervisor.getFromDef(def_name)
+        if node:
+            node.remove()
+    trajectory_points.clear()
+
+def create_static_sphere(supervisor, x, y, z):
+    global waiting_ball_def, waiting_ball_info
+    def_name = generate_valid_def_name()
+    waiting_ball_def = def_name
+    r, g, b = generate_random_color()
+    world_pos = youbot_local_to_world((x, y, z))
+    waiting_ball_info = (world_pos, r, g, b)
+    create_static_ball(def_name, world_pos, r, g, b)
+
+def activate_dynamic_ball():
+    global waiting_ball_def, waiting_ball_info
+    if waiting_ball_def is None or waiting_ball_info is None:
+        return
+    ball_node = supervisor.getFromDef(waiting_ball_def)
+    if ball_node is not None:
+        ball_node.remove()
+        supervisor.step(int(supervisor.getBasicTimeStep()))
+    world_pos, r, g, b = waiting_ball_info
+    create_dynamic_ball(waiting_ball_def, world_pos, r, g, b)
+    waiting_ball_def = None
+    waiting_ball_info = None
+
+def is_ball_landed(pos, threshold_z=0.13):
+    """當球z接近地面時視為落地"""
+    return pos[2] &lt; threshold_z
+
+print("按 A 產生一顆靜止球，按 M 讓球變 dynamic 可擊出（最多只有5個軌跡點跟著球跑，球落地後軌跡自動消失）")
+
+while supervisor.step(timestep) != -1:
+    key = keyboard.getKey()
+    current_time = time.time()
+    # 產生球
+    if key == ord('A') and (current_time - last_key_time &gt;= debounce_time):
+        if waiting_ball_def is None:
+            create_static_sphere(supervisor, *default_feed_pos)
+            current_tracked_def = waiting_ball_def
+            delete_trajectory_points()  # 新球產生時清除舊軌跡
+        else:
+            print("還有一顆球等待擊出，請先擊出再產生新球。")
+        last_key_time = current_time
+    # 讓球變動態
+    if key == ord('M') and (current_time - last_key_time &gt;= debounce_time):
+        activate_dynamic_ball()
+        last_key_time = current_time
+
+    # 拋物線軌跡追蹤
+    if current_tracked_def is not None:
+        ball_node = supervisor.getFromDef(current_tracked_def)
+        if ball_node is not None:
+            pos = ball_node.getPosition()
+            # 每 PRINT_INTERVAL 印座標
+            if current_time - last_print_time &gt;= PRINT_INTERVAL:
+                #print(f"球 {current_tracked_def} 絕對座標: [{pos[0]:.4f}, {pos[1]:.4f}, {pos[2]:.4f}]")
+                last_print_time = current_time
+            # 軌跡點：每隔一段距離才加一個，僅保留5個點
+            if (not trajectory_points) or np.linalg.norm(np.array(pos) - np.array(trajectory_points[-1][0])) &gt; TRAJECTORY_POINT_STEP:
+                def_name = create_trajectory_point(pos)
+                trajectory_points.append((pos, def_name))
+                if len(trajectory_points) &gt; TRAJECTORY_MAX_POINTS:
+                    # 移除最舊的點
+                    _, old_def = trajectory_points.pop(0)
+                    node = supervisor.getFromDef(old_def)
+                    if node:
+                        node.remove()
+            # 若球落地，自動清除軌跡
+            if is_ball_landed(pos):
+                delete_trajectory_points()
+        else:
+            # 球消失，停止追蹤並清除軌跡
+            delete_trajectory_points()
+            current_tracked_def = None</pre>
+<p><a href="/downloads/feed_ball.zip">feed_ball.zip</a></p>
+<ul>
+<li data-end="178" data-start="143">
+<p data-end="178" data-start="145"><code data-end="169" data-start="145">create_static_sphere()</code> → 建立靜止球。</p>
+</li>
+<li data-end="234" data-start="179">
+<p data-end="234" data-start="181"><code data-end="206" data-start="181">activate_dynamic_ball()</code> → 將靜止球刪除再重建為有 Physics 的動態球。</p>
+</li>
+<li data-end="291" data-start="235">
+<p data-end="291" data-start="237"><code data-end="258" data-start="237">current_tracked_def</code> 配合 <code data-end="281" data-start="262">trajectory_points</code> 管理拋物線視覺點。</p>
+</li>
+<li data-end="312" data-start="292">
+<p data-end="312" data-start="294">球落地時清軌跡點、球消失時解除追蹤。</p>
+</li>
+</ul>
+<p>參數與初始化</p>
+<p>HOOP_CENTER = [0.622, -0.103, 0.742838]<br/>BALL_DEF_PATTERN = re.compile(r"Sphere_\d+")<br/>supervisor = Supervisor()<br/>timestep = int(supervisor.getBasicTimeStep())<br/>keyboard = Keyboard()<br/>keyboard.enable(timestep)</p>
+<ul data-end="416" data-start="358">
+<li data-end="374" data-start="358">
+<p data-end="374" data-start="360">設定籃框中心位置（可擴充用）</p>
+</li>
+<li data-end="395" data-start="375">
+<p data-end="395" data-start="377">使用正則表達式找出球的 DEF 名稱</p>
+</li>
+<li data-end="416" data-start="396">
+<p data-end="416" data-start="398">啟用 Webots 監督者與鍵盤控制</p>
+</li>
+</ul>
+<p>核心參數與狀態變數</p>
+<p>sphere_radius = 0.1<br/>TRAJECTORY_POINT_RADIUS = 0.03<br/>TRAJECTORY_POINT_STEP = 0.12<br/>TRAJECTORY_MAX_POINTS = 5</p>
+<ul data-end="617" data-start="568">
+<li data-end="588" data-start="568">
+<p data-end="588" data-start="570">設定球與軌跡點的大小、間距與數量限制</p>
+</li>
+<li data-end="617" data-start="589">
+<p data-end="617" data-start="591">追蹤當前是否有未發射的球、其資訊，以及追蹤的球 ID</p>
+</li>
+</ul>
+<p>工具函式</p>
+<p>def youbot_local_to_world(local_pos):<br/> # 取得 youbot 的位置與朝向後進行座標轉換</p>
+<p>建立球體函式（靜止/動態）</p>
+<p>def create_static_ball(...)<br/>def create_dynamic_ball(...)</p>
+<p>利用 Webots 的 <code data-end="887" data-start="863">importMFNodeFromString</code> 方法在場景中加入球（<code data-end="905" data-start="898">Solid</code>）</p>
+<p>軌跡球建立與移除</p>
+<p>def create_trajectory_point(pos)<br/>def delete_trajectory_points()</p>
+<p>建立小型透明球標示軌跡（<code data-end="1029" data-start="1018">Transform</code> + <code data-end="1039" data-start="1032">Shape</code>），僅視覺效果</p>
+<p>按鍵邏輯與操作</p>
+<p>if key == ord('A') ...</p>
 <p></p>
-<br/><br/><br/><br/><strong data-end="42" data-start="17">Supervisor controller</strong> 控制器
+<ul>
+<li data-end="1141" data-start="1113">
+<p data-end="1141" data-start="1115">按 <code data-end="1120" data-start="1117">A</code> 鍵產生一顆靜止球（球會出現在機器人上方）</p>
+</li>
+<li data-end="1162" data-start="1142">
+<p data-end="1162" data-start="1144">若還有一顆未擊出的球，不允許產生新球</p>
+</li>
+</ul>
+<p>if key == ord('M') ...</p>
+<ul>
+<li data-end="1162" data-start="1142">
+<p data-end="1162" data-start="1144">按 <code data-end="1209" data-start="1206">M</code> 鍵讓目前靜止球「啟動物理引擎」→ 變成動態球，可以掉落</p>
+</li>
+</ul>
+<p>軌跡追蹤核心邏輯</p>
+<p>if current_tracked_def is not None:<br/> ball_node = supervisor.getFromDef(current_tracked_def)</p>
+<p data-end="1391" data-start="1378">每一個 timestep：</p>
+<ul data-end="1507" data-start="1394">
+<li data-end="1409" data-start="1394">
+<p data-end="1409" data-start="1396">讀取球當前位置 <code data-end="1409" data-start="1404">pos</code></p>
+</li>
+<li data-end="1457" data-start="1412">
+<p data-end="1457" data-start="1414">若距離上一個軌跡點大於 <code data-end="1449" data-start="1426">TRAJECTORY_POINT_STEP</code>，就新增一個新點</p>
+</li>
+<li data-end="1477" data-start="1460">
+<p data-end="1477" data-start="1462">若超過 5 個點，移除最舊的點</p>
+</li>
+<li data-end="1507" data-start="1480">
+<p data-end="1507" data-start="1482">若球落地（z 低於閾值），刪除所有軌跡點，結束追蹤</p>
+</li>
+</ul>
+<p></p>
+<p></p>
+<p></p>
+<p><br/><br/></p><h2>籃框及其輪車、計分程式分析</h2>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Robot, Keyboard
+
+# Constants
+#TIME_STEP = 32  # Simulation time step in milliseconds
+WHEEL_RADIUS = 0.1  # Radius of the wheels in meters (10cm)
+L = 0.471  # Half of the robot's length in meters
+W = 0.376  # Half of the robot's width in meters
+MAX_VELOCITY = 10.0  # Maximum velocity allowed for the wheels
+
+# Initialize the robot
+robot = Robot()
+
+# Get simulation time step
+timestep = int(robot.getBasicTimeStep())
+emitter = robot.getDevice("score_emitter")
+score_to_send = 2  # 每次加分2分，可依實際得分修改
+
+# Get the DistanceSensor device
+sensor = robot.getDevice('sensor')
+sensor.enable(timestep)
+score = 0
+last_score_time = 0
+cooldown = 1.0
+
+# Initialize the keyboard
+keyboard = Keyboard()
+#keyboard.enable(TIME_STEP)
+keyboard.enable(timestep)
+
+
+# Get motor devices
+wheel5 = robot.getDevice("wheel5")  # Front-right wheel
+wheel6 = robot.getDevice("wheel6")  # Front-left wheel
+wheel7 = robot.getDevice("wheel7")  # Rear-right wheel
+wheel8 = robot.getDevice("wheel8")  # Rear-left wheel
+
+# Set motors to velocity control mode
+for wheel in [wheel5, wheel6, wheel7, wheel8]:
+    wheel.setPosition(float('inf'))  # Enable velocity control
+    wheel.setVelocity(0)  # Set initial velocity to 0
+
+def set_wheel_velocity(v1, v2, v3, v4):
+    """Set the velocity of all wheels."""
+    wheel5.setVelocity(v1)
+    wheel6.setVelocity(v2)
+    wheel7.setVelocity(v3)
+    wheel8.setVelocity(v4)
+
+# lookupTable 轉成程式用的格式
+lookup_table = [
+    (1000, 0.00),
+    (620, 0.12),
+    (372, 0.13),
+    (248, 0.14),
+    (186, 0.15),
+    (0, 0.18)
+]
+
+def ad_to_distance(ad_value):
+    # 假設AD值遞減，距離遞增
+    for i in range(len(lookup_table)-1):
+        a0, d0 = lookup_table[i]
+        a1, d1 = lookup_table[i+1]
+        if a1 &lt;= ad_value &lt;= a0:
+            # 線性插值
+            return d0 + (d1 - d0) * (ad_value - a0) / (a1 - a0)
+    # 超出範圍時回傳極值
+    if ad_value &gt; lookup_table[0][0]:
+        return lookup_table[0][1]
+    return lookup_table[-1][1]
+    
+# Main loop
+print("Use 'E', 'X', 'S', 'D' keys to control the robot.")
+print("E: Move forward, X: Move backward, S: Turn left, D: Turn right.")
+print("Press 'Q' to quit.")
+
+#while robot.step(TIME_STEP) != -1:
+while robot.step(timestep) != -1:
+
+    key = keyboard.getKey()  # Read the key pressed
+    # Read DistanceSensor value
+    sensor_value = sensor.getValue()
+    #print(sensor_value)
+    distance = ad_to_distance(sensor_value)
+    current_time = robot.getTime()
+    #print(sensor_value)
+    # Check if the ball blocks the sensor (you may need to adjust the threshold based on your sensor's range)
+    if key == ord('M') or key == ord('m'):
+        print(distance)
+    if key == ord('K') or key == ord('k'):
+        print(distance)
+
+    if distance &lt; 0.11 and (current_time - last_score_time) &gt; cooldown:
+        score +=2
+        print("得分")
+        print(distance)
+        # 假設你偵測到某事件得分時才送出
+        emitter.send(str(score_to_send).encode('utf-8'))
+
+
+    if key == ord('E') or key == ord('e'):
+        # Move forward
+        velocity = MAX_VELOCITY
+        set_wheel_velocity(velocity, velocity, velocity, velocity)
+    elif key == ord('X') or key == ord('x'):
+        # Move backward
+        velocity = -MAX_VELOCITY
+        set_wheel_velocity(velocity, velocity, velocity, velocity)
+    elif key == ord('D') or key == ord('d'):
+        # Turn right
+        velocity = MAX_VELOCITY
+        set_wheel_velocity(-velocity, velocity, -velocity, velocity)
+    elif key == ord('S') or key == ord('s'):
+        # Turn left
+        velocity = MAX_VELOCITY
+        set_wheel_velocity(velocity, -velocity, velocity, -velocity)
+    elif key == ord('Q') or key == ord('q'):
+        # Quit the program
+        print("Exiting...")
+        break
+    else:
+        # Stop the wheels when no key is pressed
+        set_wheel_velocity(0, 0, 0, 0)</pre>
+<p><a href="/downloads/stand_controller.zip">stand_controller.zip</a></p>
+<p>初始化區</p>
+<p>robot = Robot()<br/>timestep = int(robot.getBasicTimeStep())</p>
+<p></p>
+<ul>
+<li data-end="394" data-start="366">
+<p data-end="394" data-start="368"><code data-end="375" data-start="368">robot</code> 是 Webots 控制器的核心物件。</p>
+</li>
+<li data-end="417" data-start="395">
+<p data-end="417" data-start="397"><code data-end="407" data-start="397">timestep</code> 是模擬的時間間隔。</p>
+</li>
+</ul>
+<p>設備取得與啟用</p>
+<p>emitter = robot.getDevice("score_emitter")<br/>sensor = robot.getDevice('sensor')<br/>sensor.enable(timestep)</p>
+<p></p>
+<ul>
+<li data-end="589" data-start="559">
+<p data-end="589" data-start="561"><code data-end="576" data-start="561">score_emitter</code>：用來傳送得分的通訊裝置。</p>
+</li>
+<li data-end="621" data-start="590">
+<p data-end="621" data-start="592"><code data-end="600" data-start="592">sensor</code>：距離感測器，測量前方是否有物體（如球）。</p>
+</li>
+</ul>
+<p>控制輪子馬達</p>
+<p>wheel5 = robot.getDevice("wheel5") # 前右輪<br/>wheel6 = robot.getDevice("wheel6") # 前左輪<br/>wheel7 = robot.getDevice("wheel7") # 後右輪<br/>wheel8 = robot.getDevice("wheel8") # 後左輪</p>
+<p></p>
+<ul>
+<li data-end="857" data-start="828">
+<p data-end="857" data-start="830">這些是輪子馬達，命名方式符合 Webots 預設定義。</p>
+</li>
+<li data-end="886" data-start="858">
+<p data-end="886" data-start="860">之後會用 <code data-end="880" data-start="865">setVelocity()</code> 控制移動。</p>
+</li>
+</ul>
+<p>鍵盤控制說明</p>
+<p>keyboard = Keyboard()<br/>keyboard.enable(timestep)</p>
+<p>啟用鍵盤輸入，讓使用者透過鍵盤操控。</p>
+<p>感測器轉距離的 lookup 表</p>
+<p>lookup_table = [<br/> (1000, 0.00),<br/> (620, 0.12),<br/> ...<br/>]</p>
+<p></p>
+<ul>
+<li data-end="1133" data-start="1104">
+<p data-end="1133" data-start="1106">感測器回傳的是「AD 值」（類比值），不是公分或公尺。</p>
+</li>
+<li data-end="1187" data-start="1134">
+<p data-end="1187" data-start="1136"><code data-end="1162" data-start="1136">ad_to_distance(ad_value)</code> 函數將 AD 值轉換為實際距離（透過線性插值）。</p>
+</li>
+</ul>
+<p>主迴圈：偵測 + 操控</p>
+<p>while robot.step(timestep) != -1:</p>
+<p data-end="1273" data-start="1265">每次 step：</p>
+<ul data-end="1362" data-start="1274">
+<li data-end="1300" data-start="1274">
+<p data-end="1300" data-start="1276">檢查鍵盤按鍵 → 控制移動（E/X/S/D）</p>
+</li>
+<li data-end="1328" data-start="1301">
+<p data-end="1328" data-start="1303">讀取距離感測器 → 如果太近且冷卻結束，就得分</p>
+</li>
+<li data-end="1347" data-start="1329">
+<p data-end="1347" data-start="1331">按 <code data-end="1340" data-start="1335">M/K</code> 顯示目前距離</p>
+</li>
+<li data-end="1362" data-start="1348">
+<p data-end="1362" data-start="1350">按 <code data-end="1357" data-start="1354">Q</code> 離開模擬</p>
+</li>
+</ul>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p>得分邏輯</p>
+<p>if distance &lt; 0.11 and (current_time - last_score_time) &gt; cooldown:</p>
+<p data-end="1512" data-start="1469">若感測距離小於 0.11 公尺（表示前方有球），而且距離上次得分已經過了 1 秒，則：</p>
+<ul data-end="1566" data-start="1515">
+<li data-end="1532" data-start="1515">
+<p data-end="1532" data-start="1517">加分（此處預設每次加 2 分）</p>
+</li>
+<li data-end="1566" data-start="1535">
+<p data-end="1566" data-start="1537">透過 emitter 傳送 <code data-end="1566" data-start="1551">score_to_send</code></p>
+</li>
+</ul>
+<p><code data-end="1566" data-start="1551">鍵盤控制對照</code></p>
+<p><code data-end="1566" data-start="1551">E前進</code></p>
+<p><code data-end="1566" data-start="1551">X後退</code></p>
+<p><span face="monospace" style="font-family: monospace;">D向右</span></p>
+<p><span face="monospace" style="font-family: monospace;">S向左</span></p>
+<p><span face="monospace" style="font-family: monospace;">M/K印出目前距離</span></p>
+<p><span face="monospace" style="font-family: monospace;">Q結束模擬</span></p>
 <pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Supervisor
 
 SEGMENTS = [
@@ -492,7 +1010,7 @@ while supervisor.step(timestep) != -1:
                 print("訊息格式錯誤:", e)
         receiver.nextPacket()
     set_display(supervisor, score)</pre>
-<p></p>
+<p><a href="/downloads/counter_supervisor.zip">counter_supervisor.zip</a></p>
 <ul>
 <li data-end="150" data-start="113">
 <p data-end="150" data-start="115">接收來自其他控制器（例如剛剛那台機器人）發送過來的 <strong data-end="149" data-start="141">得分訊息</strong>。</p>
@@ -539,7 +1057,17 @@ while supervisor.step(timestep) != -1:
 </ul>
 </li>
 </ul>
-<p></p>
+<ul data-end="1868" data-start="1694">
+<li data-end="1736" data-start="1694">
+<p data-end="1736" data-start="1696">這段程式<strong data-end="1718" data-start="1700">不會產生分數，也不控制機器人</strong>，只負責「接收分數 → 顯示分數」。</p>
+</li>
+<li data-end="1810" data-start="1737">
+<p data-end="1810" data-start="1739">如果要配合上一段程式使用，<strong data-end="1785" data-start="1752">要保證 emitter 對應的 receiver 名稱一致</strong>，像這邊叫 <code data-end="1809" data-start="1791">"score_receiver"</code>。</p>
+</li>
+<li data-end="1868" data-start="1811">
+<p data-end="1868" data-start="1813">如果 7 段顯示器的材質名字對錯了（DEF 名稱沒對上），會顯示 <code data-end="1861" data-start="1846">找不到 XXX 這個DEF</code> 的錯誤訊息。</p>
+</li>
+</ul>
 <p></p>
 <p></p>
 <p></p>

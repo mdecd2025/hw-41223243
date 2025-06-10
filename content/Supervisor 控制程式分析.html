@@ -143,8 +143,318 @@ img.add_border {
           
         </header>
     <div id="tipue_search_content">投籃機與其輪車程式分析 << <a href='投籃機與其輪車程式分析.html'>Previous</a> <a href='籃框及其輪車、計分程式分析.html'>Next</a> >> 籃框及其輪車、計分程式分析<br /><h1>Supervisor 控制程式分析</h1>
-<p>333</p>
-<br />投籃機與其輪車程式分析 << <a href='投籃機與其輪車程式分析.html'>Previous</a> <a href='籃框及其輪車、計分程式分析.html'>Next</a> >> 籃框及其輪車、計分程式分析</div>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Supervisor, Keyboard
+import time
+import random
+import numpy as np
+import re
+
+# ----------------- 參數區 -----------------
+HOOP_CENTER = [0.622, -0.103, 0.742838]
+BALL_DEF_PATTERN = re.compile(r"Sphere_\d+")
+supervisor = Supervisor()
+timestep = int(supervisor.getBasicTimeStep())
+keyboard = Keyboard()
+keyboard.enable(timestep)
+
+sphere_radius = 0.1
+TRAJECTORY_POINT_RADIUS = 0.03      # 軌跡小球半徑
+TRAJECTORY_POINT_STEP = 0.12        # 軌跡點間最小距離
+TRAJECTORY_MAX_POINTS = 5           # 只保留5個軌跡點
+
+waiting_ball_def = None
+waiting_ball_info = None
+last_key_time = 0
+debounce_time = 0.5
+default_feed_pos = (-0.35, 0.0, 0.9)
+PRINT_INTERVAL = 0.2
+
+current_tracked_def = None
+last_print_time = time.time()
+
+# 軌跡資料
+trajectory_points = []  # [(pos, def_name)] 最多五個
+
+def axis_angle_to_rotation_matrix(axis, angle):
+    x, y, z = axis
+    c = np.cos(angle)
+    s = np.sin(angle)
+    C = 1 - c
+    return np.array([
+        [x*x*C + c,   x*y*C - z*s, x*z*C + y*s],
+        [y*x*C + z*s, y*y*C + c,   y*z*C - x*s],
+        [z*x*C - y*s, z*y*C + x*s, z*z*C + c]
+    ])
+
+def generate_valid_def_name(base_name="Sphere"):
+    timestamp = int(supervisor.getTime() * 1000)
+    return f"{base_name}_{timestamp}_{random.randint(0, 10000)}"
+
+def generate_random_color():
+    return random.random(), random.random(), random.random()
+
+def youbot_local_to_world(local_pos):
+    youbot_node = supervisor.getFromDef('youbot')
+    if youbot_node is None:
+        raise RuntimeError("找不到 DEF 為 youbot 的 Robot 物件")
+    youbot_translation = np.array(youbot_node.getField('translation').getSFVec3f())
+    youbot_rotation = youbot_node.getField('rotation').getSFRotation()
+    youbot_axis = youbot_rotation[:3]
+    youbot_angle = youbot_rotation[3]
+    youbot_rot_mat = axis_angle_to_rotation_matrix(youbot_axis, youbot_angle)
+    rotated = youbot_rot_mat @ np.array(local_pos)
+    world_pos = youbot_translation + rotated
+    return tuple(world_pos)
+
+def create_static_ball(def_name, world_pos, r, g, b):
+    sphere_string = f"""
+    DEF {def_name} Solid {{
+      translation {world_pos[0]} {world_pos[1]} {world_pos[2]}
+      contactMaterial "ball"
+      children [
+        Shape {{
+          geometry Sphere {{
+            radius {sphere_radius}
+          }}
+          appearance Appearance {{
+            material Material {{
+              diffuseColor {r} {g} {b}
+            }}
+          }}
+        }}
+      ]
+      boundingObject Sphere {{
+        radius {sphere_radius}
+      }}
+    }}
+    """
+    root = supervisor.getRoot()
+    children_field = root.getField("children")
+    children_field.importMFNodeFromString(-1, sphere_string)
+
+def create_dynamic_ball(def_name, world_pos, r, g, b):
+    sphere_string = f"""
+    DEF {def_name} Solid {{
+      translation {world_pos[0]} {world_pos[1]} {world_pos[2]}
+      contactMaterial "ball"
+      children [
+        Shape {{
+          geometry Sphere {{
+            radius {sphere_radius}
+          }}
+          appearance Appearance {{
+            material Material {{
+              diffuseColor {r} {g} {b}
+            }}
+          }}
+        }}
+      ]
+      boundingObject Sphere {{
+        radius {sphere_radius}
+      }}
+      physics Physics {{
+        mass 0.01
+        density -1
+      }}
+    }}
+    """
+    root = supervisor.getRoot()
+    children_field = root.getField("children")
+    children_field.importMFNodeFromString(-1, sphere_string)
+
+def create_trajectory_point(pos):
+    """
+    在pos位置新增一個小球作為拋物線軌跡點，回傳DEF名稱。
+    用Transform持有Shape，僅作視覺標記，不影響物理。
+    """
+    def_name = generate_valid_def_name("TrajectoryPt")
+    sphere_string = f"""
+    DEF {def_name} Transform {{
+      translation {pos[0]} {pos[1]} {pos[2]}
+      children [
+        Shape {{
+          geometry Sphere {{
+            radius {TRAJECTORY_POINT_RADIUS}
+          }}
+          appearance Appearance {{
+            material Material {{
+              diffuseColor 1 0.7 0
+              transparency 0.3
+            }}
+          }}
+        }}
+      ]
+    }}
+    """
+    root = supervisor.getRoot()
+    children_field = root.getField("children")
+    children_field.importMFNodeFromString(-1, sphere_string)
+    return def_name
+
+def delete_trajectory_points():
+    """刪除所有軌跡點"""
+    global trajectory_points
+    for _, def_name in trajectory_points:
+        node = supervisor.getFromDef(def_name)
+        if node:
+            node.remove()
+    trajectory_points.clear()
+
+def create_static_sphere(supervisor, x, y, z):
+    global waiting_ball_def, waiting_ball_info
+    def_name = generate_valid_def_name()
+    waiting_ball_def = def_name
+    r, g, b = generate_random_color()
+    world_pos = youbot_local_to_world((x, y, z))
+    waiting_ball_info = (world_pos, r, g, b)
+    create_static_ball(def_name, world_pos, r, g, b)
+
+def activate_dynamic_ball():
+    global waiting_ball_def, waiting_ball_info
+    if waiting_ball_def is None or waiting_ball_info is None:
+        return
+    ball_node = supervisor.getFromDef(waiting_ball_def)
+    if ball_node is not None:
+        ball_node.remove()
+        supervisor.step(int(supervisor.getBasicTimeStep()))
+    world_pos, r, g, b = waiting_ball_info
+    create_dynamic_ball(waiting_ball_def, world_pos, r, g, b)
+    waiting_ball_def = None
+    waiting_ball_info = None
+
+def is_ball_landed(pos, threshold_z=0.13):
+    """當球z接近地面時視為落地"""
+    return pos[2] &lt; threshold_z
+
+print("按 A 產生一顆靜止球，按 M 讓球變 dynamic 可擊出（最多只有5個軌跡點跟著球跑，球落地後軌跡自動消失）")
+
+while supervisor.step(timestep) != -1:
+    key = keyboard.getKey()
+    current_time = time.time()
+    # 產生球
+    if key == ord('A') and (current_time - last_key_time &gt;= debounce_time):
+        if waiting_ball_def is None:
+            create_static_sphere(supervisor, *default_feed_pos)
+            current_tracked_def = waiting_ball_def
+            delete_trajectory_points()  # 新球產生時清除舊軌跡
+        else:
+            print("還有一顆球等待擊出，請先擊出再產生新球。")
+        last_key_time = current_time
+    # 讓球變動態
+    if key == ord('M') and (current_time - last_key_time &gt;= debounce_time):
+        activate_dynamic_ball()
+        last_key_time = current_time
+
+    # 拋物線軌跡追蹤
+    if current_tracked_def is not None:
+        ball_node = supervisor.getFromDef(current_tracked_def)
+        if ball_node is not None:
+            pos = ball_node.getPosition()
+            # 每 PRINT_INTERVAL 印座標
+            if current_time - last_print_time &gt;= PRINT_INTERVAL:
+                #print(f"球 {current_tracked_def} 絕對座標: [{pos[0]:.4f}, {pos[1]:.4f}, {pos[2]:.4f}]")
+                last_print_time = current_time
+            # 軌跡點：每隔一段距離才加一個，僅保留5個點
+            if (not trajectory_points) or np.linalg.norm(np.array(pos) - np.array(trajectory_points[-1][0])) &gt; TRAJECTORY_POINT_STEP:
+                def_name = create_trajectory_point(pos)
+                trajectory_points.append((pos, def_name))
+                if len(trajectory_points) &gt; TRAJECTORY_MAX_POINTS:
+                    # 移除最舊的點
+                    _, old_def = trajectory_points.pop(0)
+                    node = supervisor.getFromDef(old_def)
+                    if node:
+                        node.remove()
+            # 若球落地，自動清除軌跡
+            if is_ball_landed(pos):
+                delete_trajectory_points()
+        else:
+            # 球消失，停止追蹤並清除軌跡
+            delete_trajectory_points()
+            current_tracked_def = None</pre>
+<p><a href="./../downloads/feed_ball.zip">feed_ball.zip</a></p>
+<ul>
+<li data-end="178" data-start="143">
+<p data-end="178" data-start="145"><code data-end="169" data-start="145">create_static_sphere()</code> → 建立靜止球。</p>
+</li>
+<li data-end="234" data-start="179">
+<p data-end="234" data-start="181"><code data-end="206" data-start="181">activate_dynamic_ball()</code> → 將靜止球刪除再重建為有 Physics 的動態球。</p>
+</li>
+<li data-end="291" data-start="235">
+<p data-end="291" data-start="237"><code data-end="258" data-start="237">current_tracked_def</code> 配合 <code data-end="281" data-start="262">trajectory_points</code> 管理拋物線視覺點。</p>
+</li>
+<li data-end="312" data-start="292">
+<p data-end="312" data-start="294">球落地時清軌跡點、球消失時解除追蹤。</p>
+</li>
+</ul>
+<p>參數與初始化</p>
+<p>HOOP_CENTER = [0.622, -0.103, 0.742838]<br/>BALL_DEF_PATTERN = re.compile(r"Sphere_\d+")<br/>supervisor = Supervisor()<br/>timestep = int(supervisor.getBasicTimeStep())<br/>keyboard = Keyboard()<br/>keyboard.enable(timestep)</p>
+<ul data-end="416" data-start="358">
+<li data-end="374" data-start="358">
+<p data-end="374" data-start="360">設定籃框中心位置（可擴充用）</p>
+</li>
+<li data-end="395" data-start="375">
+<p data-end="395" data-start="377">使用正則表達式找出球的 DEF 名稱</p>
+</li>
+<li data-end="416" data-start="396">
+<p data-end="416" data-start="398">啟用 Webots 監督者與鍵盤控制</p>
+</li>
+</ul>
+<p>核心參數與狀態變數</p>
+<p>sphere_radius = 0.1<br/>TRAJECTORY_POINT_RADIUS = 0.03<br/>TRAJECTORY_POINT_STEP = 0.12<br/>TRAJECTORY_MAX_POINTS = 5</p>
+<ul data-end="617" data-start="568">
+<li data-end="588" data-start="568">
+<p data-end="588" data-start="570">設定球與軌跡點的大小、間距與數量限制</p>
+</li>
+<li data-end="617" data-start="589">
+<p data-end="617" data-start="591">追蹤當前是否有未發射的球、其資訊，以及追蹤的球 ID</p>
+</li>
+</ul>
+<p>工具函式</p>
+<p>def youbot_local_to_world(local_pos):<br/> # 取得 youbot 的位置與朝向後進行座標轉換</p>
+<p>建立球體函式（靜止/動態）</p>
+<p>def create_static_ball(...)<br/>def create_dynamic_ball(...)</p>
+<p>利用 Webots 的 <code data-end="887" data-start="863">importMFNodeFromString</code> 方法在場景中加入球（<code data-end="905" data-start="898">Solid</code>）</p>
+<p>軌跡球建立與移除</p>
+<p>def create_trajectory_point(pos)<br/>def delete_trajectory_points()</p>
+<p>建立小型透明球標示軌跡（<code data-end="1029" data-start="1018">Transform</code> + <code data-end="1039" data-start="1032">Shape</code>），僅視覺效果</p>
+<p>按鍵邏輯與操作</p>
+<p>if key == ord('A') ...</p>
+<p></p>
+<ul>
+<li data-end="1141" data-start="1113">
+<p data-end="1141" data-start="1115">按 <code data-end="1120" data-start="1117">A</code> 鍵產生一顆靜止球（球會出現在機器人上方）</p>
+</li>
+<li data-end="1162" data-start="1142">
+<p data-end="1162" data-start="1144">若還有一顆未擊出的球，不允許產生新球</p>
+</li>
+</ul>
+<p>if key == ord('M') ...</p>
+<ul>
+<li data-end="1162" data-start="1142">
+<p data-end="1162" data-start="1144">按 <code data-end="1209" data-start="1206">M</code> 鍵讓目前靜止球「啟動物理引擎」→ 變成動態球，可以掉落</p>
+</li>
+</ul>
+<p>軌跡追蹤核心邏輯</p>
+<p>if current_tracked_def is not None:<br/> ball_node = supervisor.getFromDef(current_tracked_def)</p>
+<p data-end="1391" data-start="1378">每一個 timestep：</p>
+<ul data-end="1507" data-start="1394">
+<li data-end="1409" data-start="1394">
+<p data-end="1409" data-start="1396">讀取球當前位置 <code data-end="1409" data-start="1404">pos</code></p>
+</li>
+<li data-end="1457" data-start="1412">
+<p data-end="1457" data-start="1414">若距離上一個軌跡點大於 <code data-end="1449" data-start="1426">TRAJECTORY_POINT_STEP</code>，就新增一個新點</p>
+</li>
+<li data-end="1477" data-start="1460">
+<p data-end="1477" data-start="1462">若超過 5 個點，移除最舊的點</p>
+</li>
+<li data-end="1507" data-start="1480">
+<p data-end="1507" data-start="1482">若球落地（z 低於閾值），刪除所有軌跡點，結束追蹤</p>
+</li>
+</ul>
+<p></p>
+<p></p>
+<p></p>
+<p><br/><br/></p><br />投籃機與其輪車程式分析 << <a href='投籃機與其輪車程式分析.html'>Previous</a> <a href='籃框及其輪車、計分程式分析.html'>Next</a> >> 籃框及其輪車、計分程式分析</div>
         
     <!-- footer -->
       <div class="container">
