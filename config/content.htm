@@ -427,11 +427,124 @@ while robot.step(timestep) != -1:
 <p><code data-end="1144" data-start="1141">→</code>：轉右</p>
 <p>防止使用者連續按同一鍵造成重複設定指令。</p>
 <p>current_state = "allow_m" # 只能先按 M<br/># M 按過 → allow_k，K 按過 → allow_m，如此循環</p>
+<h2>Supervisor 控制程式分析</h2>
+<p>333</p>
+<h2>籃框及其輪車、計分程式分析</h2>
+<p>333</p>
+<p></p>
+<br/><br/><br/><br/><strong data-end="42" data-start="17">Supervisor controller</strong> 控制器
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Supervisor
+
+SEGMENTS = [
+    [1,1,1,1,1,1,0], # 0
+    [0,1,1,0,0,0,0], # 1
+    [1,1,0,1,1,0,1], # 2
+    [1,1,1,1,0,0,1], # 3
+    [0,1,1,0,0,1,1], # 4
+    [1,0,1,1,0,1,1], # 5
+    [1,0,1,1,1,1,1], # 6
+    [1,1,1,0,0,0,0], # 7
+    [1,1,1,1,1,1,1], # 8
+    [1,1,1,1,0,1,1], # 9
+]
+DIGIT_MATERIALS = [
+    ['a3mat', 'b3mat', 'c3mat', 'd3mat', 'e3mat', 'f3mat', 'g3mat'], # 百
+    ['a2mat', 'b2mat', 'c2mat', 'd2mat', 'e2mat', 'f2mat', 'g2mat'], # 十
+    ['a1mat', 'b1mat', 'c1mat', 'd1mat', 'e1mat', 'f1mat', 'g1mat'], # 個
+]
+ON_COLOR = [0, 1, 0]
+OFF_COLOR = [0.05, 0.05, 0.05]
+
+def set_digit(supervisor, digit_index, value):
+    segs = SEGMENTS[value]
+    for i, seg_on in enumerate(segs):
+        mat_node = supervisor.getFromDef(DIGIT_MATERIALS[digit_index][i])
+        if mat_node:
+            mat_node.getField('diffuseColor').setSFColor(ON_COLOR if seg_on else OFF_COLOR)
+        else:
+            print(f"找不到 {DIGIT_MATERIALS[digit_index][i]} 這個DEF")
+
+def set_display(supervisor, value):
+    value = max(0, min(999, int(value)))
+    h = value // 100
+    t = (value // 10) % 10
+    u = value % 10
+    set_digit(supervisor, 0, h)
+    set_digit(supervisor, 1, t)
+    set_digit(supervisor, 2, u)
+
+supervisor = Supervisor()
+timestep = int(supervisor.getBasicTimeStep())
+
+score = 0
+receiver = supervisor.getDevice("score_receiver")
+receiver.enable(timestep)
+
+while supervisor.step(timestep) != -1:
+    while receiver.getQueueLength() &gt; 0:
+        data = receiver.getString()
+        if data.isdigit():
+            try:
+                received_score = int(data)
+                score += received_score
+                print(f"收到得分訊息: +{received_score}, 總分: {score}")
+            except Exception as e:
+                print("訊息格式錯誤:", e)
+        receiver.nextPacket()
+    set_display(supervisor, score)</pre>
+<p></p>
+<ul>
+<li data-end="150" data-start="113">
+<p data-end="150" data-start="115">接收來自其他控制器（例如剛剛那台機器人）發送過來的 <strong data-end="149" data-start="141">得分訊息</strong>。</p>
+</li>
+<li data-end="167" data-start="151">
+<p data-end="167" data-start="153">解析訊息後，把得分累加起來。</p>
+</li>
+<li data-end="215" data-start="168">
+<p data-end="215" data-start="170">然後根據目前總分，控制三個 <strong data-end="199" data-start="184">7 段顯示器的材質顏色</strong>，呈現出目前分數（0~999）。</p>
+</li>
+</ul>
+<p>DIGIT_MATERIALS = [<br/> ['a3mat', ..., 'g3mat'], # 百位<br/> ['a2mat', ..., 'g2mat'], # 十位<br/> ['a1mat', ..., 'g1mat'], # 個位<br/>]</p>
+<p data-end="681" data-start="598">這表示三個數字的 7 段顯示器，每一段在 Webots 世界中的 <strong data-end="641" data-start="631">DEF 名稱</strong><br data-end="644" data-start="641"/> 例如「百位數的 a 段」是 <code data-end="665" data-start="658">a3mat</code>，會對應到場景中一段特定的材質。</p>
+<p data-end="681" data-start="598">def set_digit(supervisor, digit_index, value):<br/> ...</p>
+<p data-end="839" data-start="783">這個函數用來「控制某一位數字（百／十／個）要顯示什麼數字」，它會根據 <code data-end="828" data-start="818">SEGMENTS</code> 來打開／關掉那幾段。</p>
+<ul data-end="918" data-start="841">
+<li data-end="866" data-start="841">
+<p data-end="866" data-start="843"><code data-end="860" data-start="843">digit_index = 0</code>: 控制百位</p>
+</li>
+<li data-end="892" data-start="867">
+<p data-end="892" data-start="869"><code data-end="886" data-start="869">digit_index = 1</code>: 控制十位</p>
+</li>
+<li data-end="918" data-start="893">
+<p data-end="918" data-start="895"><code data-end="912" data-start="895">digit_index = 2</code>: 控制個位</p>
+</li>
+</ul>
+<p data-end="982" data-start="920">內部用 <code data-end="941" data-start="924">getFromDef(...)</code> 來抓材質節點，然後把 <code data-end="967" data-start="953">diffuseColor</code> 設成亮（綠色）或暗（灰色）。</p>
+<p data-end="982" data-start="920">def set_display(supervisor, value):<br/> ...</p>
+<p data-end="982" data-start="920">這是主函數，會把 0~999 的整數分成三位數來呼叫 <code data-end="1113" data-start="1102">set_digit</code>，更新整個顯示器。</p>
+<p data-end="982" data-start="920">supervisor = Supervisor()<br/>...<br/>receiver = supervisor.getDevice("score_receiver")</p>
+<p data-end="982" data-start="920">這是 Webots 的 supervisor 控制器初始化，並啟用一個 <strong data-end="1300" data-start="1285">receiver 裝置</strong>，用來接收得分。</p>
+<p data-end="982" data-start="920">while supervisor.step(timestep) != -1:<br/> while receiver.getQueueLength() &gt; 0:<br/> ...</p>
+<p data-end="1453" data-start="1434">每個模擬步驟都檢查有沒有新的資料進來：</p>
+<ul data-end="1516" data-start="1455">
+<li data-end="1516" data-start="1455">
+<p data-end="1478" data-start="1457">如果有新的得分數字（如 <code data-end="1472" data-start="1469">2</code>、<code data-end="1476" data-start="1473">5</code>）：</p>
+<ul data-end="1516" data-start="1481">
+<li data-end="1497" data-start="1481">
+<p data-end="1497" data-start="1483">解析字串為整數，累加到總分。</p>
+</li>
+<li data-end="1516" data-start="1500">
+<p data-end="1516" data-start="1502">更新三位數顯示器的顏色狀態。</p>
+</li>
+</ul>
+</li>
+</ul>
 <p></p>
 <p></p>
 <p></p>
 <p></p>
-<h1>Brython</h1>
+<p></p>
+<p></p><h1>Brython</h1>
 <p><button id="add1to100">1 add to 100</button></p>
 <!-- 導入 brython 程式庫 -->
 <p>
