@@ -314,11 +314,13 @@ fetch_data()</pre>
 <p>請將期末協同專案執行過程、內容與心得, 製作成影片，配合字幕上傳至 Youtube 後嵌入各階段的期末報告頁面中.</p>
 <p>影片標題: <span style="background-color: #ffff00;">國立虎尾科技大學 - 機械設計工程系 - cd2025 期末報告 - 學員學號 - 各階段影片主題<br/></span></p>
 <p></p>
-<p>還沒完成</p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/12J9qm32pJQ?si=ZsESO3Hz3WGIHrWh" title="YouTube video player" width="560"></iframe></p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/nA7_NVboh0s?si=gEi4-YDAco3UVh4T" title="YouTube video player" width="560"></iframe></p>
 <p>藉由M跟K來控制投球機的發射，而上下左右則可以控制投球機下方的輪車移動。</p>
-<h2>投籃機與其輪車程式分析</h2>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/24chXa1bfHo?si=wtc0-7gU9f3J37gr" title="YouTube video player" width="560"></iframe></p>
+<p><a href="/downloads/final.zip">期末報告與世界檔案</a></p>
+<p><a href="/downloads/協同產品設計實習期末報告.pdf">協同產品設計實習期末報告.pdf</a></p>
+<p></p><h2>投籃機與其輪車程式分析</h2>
 <pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Robot, Keyboard
 
 # Constants
@@ -1011,7 +1013,6 @@ while supervisor.step(timestep) != -1:
         receiver.nextPacket()
     set_display(supervisor, score)</pre>
 <p><a href="/downloads/counter_supervisor.zip">counter_supervisor.zip</a></p>
-<p></p>
 <ul>
 <li data-end="150" data-start="113">
 <p data-end="150" data-start="115">接收來自其他控制器（例如剛剛那台機器人）發送過來的 <strong data-end="149" data-start="141">得分訊息</strong>。</p>
