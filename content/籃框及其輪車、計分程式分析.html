@@ -1,0 +1,524 @@
+<!DOCTYPE html><html>
+        <head>
+        <title>cd_hw</title>
+        <meta charset="utf-8">
+<meta property="head" content="H2">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/css/bootstrap.min.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/css/magnific-popup.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/css/jquery-ui.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/css/owl.carousel.min.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/css/owl.theme.default.min.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/css/bootstrap-datepicker.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/flaticon/font/flaticon.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/css/aos.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/css/style.css">
+        <link rel="shortcut icon" href="./../cmsimde/static/favicons.png">
+        
+        <style type='text/css'>
+            .site-section {
+            background-color: #FFFF;
+            padding: 40px 40px;
+            }
+            body > div > div.dropdown.open {
+                display: block;
+            }
+        </style>
+    
+        <!-- <script src="./../cmsimde/static/jquery.js"></script> -->
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+        <script src="../cmsimde/static/chimper/js/jquery-3.3.1.min.js"></script>
+        <link rel="stylesheet" href="./../cmsimde/static/tipuesearch/css/normalize.min.css">
+        <script src="./../cmsimde/static/tipuesearch/tipuesearch_set.js"></script>
+        <script src="tipuesearch_content.js"></script>
+        <link rel="stylesheet" href="./../cmsimde/static/tipuesearch/css/tipuesearch.css">
+        <script src="./../cmsimde/static/tipuesearch/tipuesearch.js"></script>
+        <!-- for Wink3 客製化關閉 -->
+        <!--
+        <link rel="stylesheet" type="text/css" href="./../cmsimde/static/winkPlayer.css" />
+        <script type="text/javascript" src="./../cmsimde/static/winkPlayer.js"></script>
+        -->
+        <script>
+            /* original tipuesearch
+            $(document).ready(function() {
+                 $('#tipue_search_input').tipuesearch();
+            });
+            */
+            // customed doSearch
+            function doSearch() {
+                $('#tipue_search_input').tipuesearch({
+                    newWindow: true, 
+                    minimumLength: 2,
+                    wholeWords: false, // for search 中文
+                });
+            }
+            $(document).ready(doSearch);
+        </script>
+        
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shCore.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushBash.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushDiff.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushJScript.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushJava.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushPython.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushSql.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushHaxe.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushXml.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushPhp.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushPowerShell.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushLua.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushMojo.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushWbt.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushCpp.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushCss.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushCSharp.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushDart.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushRust.js"></script>
+<link type="text/css" rel="stylesheet" href="./../cmsimde/static/syntaxhighlighter/css/shCoreDefault.css"/>
+<script type="text/javascript">SyntaxHighlighter.all();</script>
+<!-- 暫時不用
+<script src="./../cmsimde/static/fengari-web.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/Cango-13v08-min.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/CangoAxes-4v01-min.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/gearUtils-05.js"></script>
+-->
+<!-- for Brython 暫時不用
+<script src="https://scrum-3.github.io/web/brython/brython.js"></script>
+<script src="https://scrum-3.github.io/web/brython/brython_stdlib.js"></script>
+-->
+<style>
+img.add_border {
+    border: 3px solid blue;
+}
+</style>
+
+</head>
+<body>
+<div class='container'><nav>
+        
+    <div class="site-wrap">
+
+    <div class="site-mobile-menu">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div>
+    
+            <header class="site-navbar py-4 bg-white" role="banner">
+              <div class="container">
+                <div class="row align-items-center">
+                <h1>hw-41223243協同產品設計實習</h1>
+                <div class="pl-4">
+                    <form>
+                    <input type="text" placeholder="Search" name="q" id="tipue_search_input" pattern=".{2,}" title="At least 2 characters" required>
+                    </form>
+                </div>
+                  <!-- <div class="col-11 col-xl-2">
+                    <h1 class="mb-0 site-logo"><a href="index.html" class="text-black h2 mb-0">hw-41223243協同產品設計實習</a></h1> 
+                  </div>
+                  -->
+                  <div class="col-12 col-md-10 d-none d-xl-block">
+                    <nav class="site-navigation position-relative text-right" role="navigation">
+    <ul class='site-menu js-clone-nav mr-auto d-none d-lg-block'>
+                        <li class="active has-children"><a href="index.html">Home</a>
+                        <ul class="dropdown">
+                            <li><a href="sitemap.html">SMap</a></li>
+                            <li><a href="./../reveal/index.html">reveal</a></li>
+                            <li><a href="./../blog/index.html">blog</a></li>
+                        </ul>
+                      </li>
+                     <li class='has-children'><a href='About.html'>About</a><ul class='dropdown'><li><a href='repo.html'>repo</a></li></ul><li class='has-children'><a href='Tasks.html'>Tasks</a><ul class='dropdown'><li><a href='task1.html'>task1</a><li><a href='task2.html'>task2</a><li><a href='task3.html'>task3</a><li><a href='task4.html'>task4</a><li><a href='task5.html'>task5</a><li><a href='task6.html'>task6</a></li></ul><li class='has-children'><a href='Homework.html'>Homework</a><ul class='dropdown'><li><a href='HW1.html'>HW1</a><li class='has-children'><a href='HW2.html'>HW2</a><ul class='dropdown'><li><a href='平面四連桿.html'>平面四連桿</a></li></ul><li><a href='HW3.html'>HW3</a></li></ul><li><a href='Midterm.html'>Midterm</a><li class='has-children'><a href='Exam.html'>Exam</a><ul class='dropdown'><li><a href='Exam1.html'>Exam1</a><li><a href='Exam2.html'>Exam2</a><li><a href='Exam3.html'>Exam3</a></li></ul><li class='has-children'><a href='Final.html'>Final</a><ul class='dropdown'><li><a href='投籃機與其輪車程式分析.html'>投籃機與其輪車程式分析</a><li><a href='Supervisor 控制程式分析.html'>Supervisor 控制程式分析</a><li><a href='籃框及其輪車、計分程式分析.html'>籃框及其輪車、計分程式分析</a></li></ul><li><a href='期末總結.html'>期末總結</a><li><a href='Brython.html'>Brython</a></li>
+                      </ul>
+                </nav>
+              </div>
+              <div class="d-inline-block d-xl-none ml-md-0 mr-auto py-3" style="position: relative; top: 3px;"><a href="#" class="site-menu-toggle js-menu-toggle text-black"><span class="icon-menu h3"></span></a></div>
+              </div>
+
+            </div>
+          </div>
+          
+        </header>
+    <div id="tipue_search_content">Supervisor 控制程式分析 << <a href='Supervisor 控制程式分析.html'>Previous</a> <a href='期末總結.html'>Next</a> >> 期末總結<br /><h1>籃框及其輪車、計分程式分析</h1>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Robot, Keyboard
+
+# Constants
+#TIME_STEP = 32  # Simulation time step in milliseconds
+WHEEL_RADIUS = 0.1  # Radius of the wheels in meters (10cm)
+L = 0.471  # Half of the robot's length in meters
+W = 0.376  # Half of the robot's width in meters
+MAX_VELOCITY = 10.0  # Maximum velocity allowed for the wheels
+
+# Initialize the robot
+robot = Robot()
+
+# Get simulation time step
+timestep = int(robot.getBasicTimeStep())
+emitter = robot.getDevice("score_emitter")
+score_to_send = 2  # 每次加分2分，可依實際得分修改
+
+# Get the DistanceSensor device
+sensor = robot.getDevice('sensor')
+sensor.enable(timestep)
+score = 0
+last_score_time = 0
+cooldown = 1.0
+
+# Initialize the keyboard
+keyboard = Keyboard()
+#keyboard.enable(TIME_STEP)
+keyboard.enable(timestep)
+
+
+# Get motor devices
+wheel5 = robot.getDevice("wheel5")  # Front-right wheel
+wheel6 = robot.getDevice("wheel6")  # Front-left wheel
+wheel7 = robot.getDevice("wheel7")  # Rear-right wheel
+wheel8 = robot.getDevice("wheel8")  # Rear-left wheel
+
+# Set motors to velocity control mode
+for wheel in [wheel5, wheel6, wheel7, wheel8]:
+    wheel.setPosition(float('inf'))  # Enable velocity control
+    wheel.setVelocity(0)  # Set initial velocity to 0
+
+def set_wheel_velocity(v1, v2, v3, v4):
+    """Set the velocity of all wheels."""
+    wheel5.setVelocity(v1)
+    wheel6.setVelocity(v2)
+    wheel7.setVelocity(v3)
+    wheel8.setVelocity(v4)
+
+# lookupTable 轉成程式用的格式
+lookup_table = [
+    (1000, 0.00),
+    (620, 0.12),
+    (372, 0.13),
+    (248, 0.14),
+    (186, 0.15),
+    (0, 0.18)
+]
+
+def ad_to_distance(ad_value):
+    # 假設AD值遞減，距離遞增
+    for i in range(len(lookup_table)-1):
+        a0, d0 = lookup_table[i]
+        a1, d1 = lookup_table[i+1]
+        if a1 &lt;= ad_value &lt;= a0:
+            # 線性插值
+            return d0 + (d1 - d0) * (ad_value - a0) / (a1 - a0)
+    # 超出範圍時回傳極值
+    if ad_value &gt; lookup_table[0][0]:
+        return lookup_table[0][1]
+    return lookup_table[-1][1]
+    
+# Main loop
+print("Use 'E', 'X', 'S', 'D' keys to control the robot.")
+print("E: Move forward, X: Move backward, S: Turn left, D: Turn right.")
+print("Press 'Q' to quit.")
+
+#while robot.step(TIME_STEP) != -1:
+while robot.step(timestep) != -1:
+
+    key = keyboard.getKey()  # Read the key pressed
+    # Read DistanceSensor value
+    sensor_value = sensor.getValue()
+    #print(sensor_value)
+    distance = ad_to_distance(sensor_value)
+    current_time = robot.getTime()
+    #print(sensor_value)
+    # Check if the ball blocks the sensor (you may need to adjust the threshold based on your sensor's range)
+    if key == ord('M') or key == ord('m'):
+        print(distance)
+    if key == ord('K') or key == ord('k'):
+        print(distance)
+
+    if distance &lt; 0.11 and (current_time - last_score_time) &gt; cooldown:
+        score +=2
+        print("得分")
+        print(distance)
+        # 假設你偵測到某事件得分時才送出
+        emitter.send(str(score_to_send).encode('utf-8'))
+
+
+    if key == ord('E') or key == ord('e'):
+        # Move forward
+        velocity = MAX_VELOCITY
+        set_wheel_velocity(velocity, velocity, velocity, velocity)
+    elif key == ord('X') or key == ord('x'):
+        # Move backward
+        velocity = -MAX_VELOCITY
+        set_wheel_velocity(velocity, velocity, velocity, velocity)
+    elif key == ord('D') or key == ord('d'):
+        # Turn right
+        velocity = MAX_VELOCITY
+        set_wheel_velocity(-velocity, velocity, -velocity, velocity)
+    elif key == ord('S') or key == ord('s'):
+        # Turn left
+        velocity = MAX_VELOCITY
+        set_wheel_velocity(velocity, -velocity, velocity, -velocity)
+    elif key == ord('Q') or key == ord('q'):
+        # Quit the program
+        print("Exiting...")
+        break
+    else:
+        # Stop the wheels when no key is pressed
+        set_wheel_velocity(0, 0, 0, 0)</pre>
+<p><a href="./../downloads/stand_controller.zip">stand_controller.zip</a></p>
+<p>初始化區</p>
+<p>robot = Robot()<br/>timestep = int(robot.getBasicTimeStep())</p>
+<p></p>
+<ul>
+<li data-end="394" data-start="366">
+<p data-end="394" data-start="368"><code data-end="375" data-start="368">robot</code> 是 Webots 控制器的核心物件。</p>
+</li>
+<li data-end="417" data-start="395">
+<p data-end="417" data-start="397"><code data-end="407" data-start="397">timestep</code> 是模擬的時間間隔。</p>
+</li>
+</ul>
+<p>設備取得與啟用</p>
+<p>emitter = robot.getDevice("score_emitter")<br/>sensor = robot.getDevice('sensor')<br/>sensor.enable(timestep)</p>
+<p></p>
+<ul>
+<li data-end="589" data-start="559">
+<p data-end="589" data-start="561"><code data-end="576" data-start="561">score_emitter</code>：用來傳送得分的通訊裝置。</p>
+</li>
+<li data-end="621" data-start="590">
+<p data-end="621" data-start="592"><code data-end="600" data-start="592">sensor</code>：距離感測器，測量前方是否有物體（如球）。</p>
+</li>
+</ul>
+<p>控制輪子馬達</p>
+<p>wheel5 = robot.getDevice("wheel5") # 前右輪<br/>wheel6 = robot.getDevice("wheel6") # 前左輪<br/>wheel7 = robot.getDevice("wheel7") # 後右輪<br/>wheel8 = robot.getDevice("wheel8") # 後左輪</p>
+<p></p>
+<ul>
+<li data-end="857" data-start="828">
+<p data-end="857" data-start="830">這些是輪子馬達，命名方式符合 Webots 預設定義。</p>
+</li>
+<li data-end="886" data-start="858">
+<p data-end="886" data-start="860">之後會用 <code data-end="880" data-start="865">setVelocity()</code> 控制移動。</p>
+</li>
+</ul>
+<p>鍵盤控制說明</p>
+<p>keyboard = Keyboard()<br/>keyboard.enable(timestep)</p>
+<p>啟用鍵盤輸入，讓使用者透過鍵盤操控。</p>
+<p>感測器轉距離的 lookup 表</p>
+<p>lookup_table = [<br/> (1000, 0.00),<br/> (620, 0.12),<br/> ...<br/>]</p>
+<p></p>
+<ul>
+<li data-end="1133" data-start="1104">
+<p data-end="1133" data-start="1106">感測器回傳的是「AD 值」（類比值），不是公分或公尺。</p>
+</li>
+<li data-end="1187" data-start="1134">
+<p data-end="1187" data-start="1136"><code data-end="1162" data-start="1136">ad_to_distance(ad_value)</code> 函數將 AD 值轉換為實際距離（透過線性插值）。</p>
+</li>
+</ul>
+<p>主迴圈：偵測 + 操控</p>
+<p>while robot.step(timestep) != -1:</p>
+<p data-end="1273" data-start="1265">每次 step：</p>
+<ul data-end="1362" data-start="1274">
+<li data-end="1300" data-start="1274">
+<p data-end="1300" data-start="1276">檢查鍵盤按鍵 → 控制移動（E/X/S/D）</p>
+</li>
+<li data-end="1328" data-start="1301">
+<p data-end="1328" data-start="1303">讀取距離感測器 → 如果太近且冷卻結束，就得分</p>
+</li>
+<li data-end="1347" data-start="1329">
+<p data-end="1347" data-start="1331">按 <code data-end="1340" data-start="1335">M/K</code> 顯示目前距離</p>
+</li>
+<li data-end="1362" data-start="1348">
+<p data-end="1362" data-start="1350">按 <code data-end="1357" data-start="1354">Q</code> 離開模擬</p>
+</li>
+</ul>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p>得分邏輯</p>
+<p>if distance &lt; 0.11 and (current_time - last_score_time) &gt; cooldown:</p>
+<p data-end="1512" data-start="1469">若感測距離小於 0.11 公尺（表示前方有球），而且距離上次得分已經過了 1 秒，則：</p>
+<ul data-end="1566" data-start="1515">
+<li data-end="1532" data-start="1515">
+<p data-end="1532" data-start="1517">加分（此處預設每次加 2 分）</p>
+</li>
+<li data-end="1566" data-start="1535">
+<p data-end="1566" data-start="1537">透過 emitter 傳送 <code data-end="1566" data-start="1551">score_to_send</code></p>
+</li>
+</ul>
+<p><code data-end="1566" data-start="1551">鍵盤控制對照</code></p>
+<p><code data-end="1566" data-start="1551">E前進</code></p>
+<p><code data-end="1566" data-start="1551">X後退</code></p>
+<p><span face="monospace" style="font-family: monospace;">D向右</span></p>
+<p><span face="monospace" style="font-family: monospace;">S向左</span></p>
+<p><span face="monospace" style="font-family: monospace;">M/K印出目前距離</span></p>
+<p><span face="monospace" style="font-family: monospace;">Q結束模擬</span></p>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Supervisor
+
+SEGMENTS = [
+    [1,1,1,1,1,1,0], # 0
+    [0,1,1,0,0,0,0], # 1
+    [1,1,0,1,1,0,1], # 2
+    [1,1,1,1,0,0,1], # 3
+    [0,1,1,0,0,1,1], # 4
+    [1,0,1,1,0,1,1], # 5
+    [1,0,1,1,1,1,1], # 6
+    [1,1,1,0,0,0,0], # 7
+    [1,1,1,1,1,1,1], # 8
+    [1,1,1,1,0,1,1], # 9
+]
+DIGIT_MATERIALS = [
+    ['a3mat', 'b3mat', 'c3mat', 'd3mat', 'e3mat', 'f3mat', 'g3mat'], # 百
+    ['a2mat', 'b2mat', 'c2mat', 'd2mat', 'e2mat', 'f2mat', 'g2mat'], # 十
+    ['a1mat', 'b1mat', 'c1mat', 'd1mat', 'e1mat', 'f1mat', 'g1mat'], # 個
+]
+ON_COLOR = [0, 1, 0]
+OFF_COLOR = [0.05, 0.05, 0.05]
+
+def set_digit(supervisor, digit_index, value):
+    segs = SEGMENTS[value]
+    for i, seg_on in enumerate(segs):
+        mat_node = supervisor.getFromDef(DIGIT_MATERIALS[digit_index][i])
+        if mat_node:
+            mat_node.getField('diffuseColor').setSFColor(ON_COLOR if seg_on else OFF_COLOR)
+        else:
+            print(f"找不到 {DIGIT_MATERIALS[digit_index][i]} 這個DEF")
+
+def set_display(supervisor, value):
+    value = max(0, min(999, int(value)))
+    h = value // 100
+    t = (value // 10) % 10
+    u = value % 10
+    set_digit(supervisor, 0, h)
+    set_digit(supervisor, 1, t)
+    set_digit(supervisor, 2, u)
+
+supervisor = Supervisor()
+timestep = int(supervisor.getBasicTimeStep())
+
+score = 0
+receiver = supervisor.getDevice("score_receiver")
+receiver.enable(timestep)
+
+while supervisor.step(timestep) != -1:
+    while receiver.getQueueLength() &gt; 0:
+        data = receiver.getString()
+        if data.isdigit():
+            try:
+                received_score = int(data)
+                score += received_score
+                print(f"收到得分訊息: +{received_score}, 總分: {score}")
+            except Exception as e:
+                print("訊息格式錯誤:", e)
+        receiver.nextPacket()
+    set_display(supervisor, score)</pre>
+<p><a href="./../downloads/counter_supervisor.zip">counter_supervisor.zip</a></p>
+<ul>
+<li data-end="150" data-start="113">
+<p data-end="150" data-start="115">接收來自其他控制器（例如剛剛那台機器人）發送過來的 <strong data-end="149" data-start="141">得分訊息</strong>。</p>
+</li>
+<li data-end="167" data-start="151">
+<p data-end="167" data-start="153">解析訊息後，把得分累加起來。</p>
+</li>
+<li data-end="215" data-start="168">
+<p data-end="215" data-start="170">然後根據目前總分，控制三個 <strong data-end="199" data-start="184">7 段顯示器的材質顏色</strong>，呈現出目前分數（0~999）。</p>
+</li>
+</ul>
+<p>DIGIT_MATERIALS = [<br/> ['a3mat', ..., 'g3mat'], # 百位<br/> ['a2mat', ..., 'g2mat'], # 十位<br/> ['a1mat', ..., 'g1mat'], # 個位<br/>]</p>
+<p data-end="681" data-start="598">這表示三個數字的 7 段顯示器，每一段在 Webots 世界中的 <strong data-end="641" data-start="631">DEF 名稱</strong><br data-end="644" data-start="641"/> 例如「百位數的 a 段」是 <code data-end="665" data-start="658">a3mat</code>，會對應到場景中一段特定的材質。</p>
+<p data-end="681" data-start="598">def set_digit(supervisor, digit_index, value):<br/> ...</p>
+<p data-end="839" data-start="783">這個函數用來「控制某一位數字（百／十／個）要顯示什麼數字」，它會根據 <code data-end="828" data-start="818">SEGMENTS</code> 來打開／關掉那幾段。</p>
+<ul data-end="918" data-start="841">
+<li data-end="866" data-start="841">
+<p data-end="866" data-start="843"><code data-end="860" data-start="843">digit_index = 0</code>: 控制百位</p>
+</li>
+<li data-end="892" data-start="867">
+<p data-end="892" data-start="869"><code data-end="886" data-start="869">digit_index = 1</code>: 控制十位</p>
+</li>
+<li data-end="918" data-start="893">
+<p data-end="918" data-start="895"><code data-end="912" data-start="895">digit_index = 2</code>: 控制個位</p>
+</li>
+</ul>
+<p data-end="982" data-start="920">內部用 <code data-end="941" data-start="924">getFromDef(...)</code> 來抓材質節點，然後把 <code data-end="967" data-start="953">diffuseColor</code> 設成亮（綠色）或暗（灰色）。</p>
+<p data-end="982" data-start="920">def set_display(supervisor, value):<br/> ...</p>
+<p data-end="982" data-start="920">這是主函數，會把 0~999 的整數分成三位數來呼叫 <code data-end="1113" data-start="1102">set_digit</code>，更新整個顯示器。</p>
+<p data-end="982" data-start="920">supervisor = Supervisor()<br/>...<br/>receiver = supervisor.getDevice("score_receiver")</p>
+<p data-end="982" data-start="920">這是 Webots 的 supervisor 控制器初始化，並啟用一個 <strong data-end="1300" data-start="1285">receiver 裝置</strong>，用來接收得分。</p>
+<p data-end="982" data-start="920">while supervisor.step(timestep) != -1:<br/> while receiver.getQueueLength() &gt; 0:<br/> ...</p>
+<p data-end="1453" data-start="1434">每個模擬步驟都檢查有沒有新的資料進來：</p>
+<ul data-end="1516" data-start="1455">
+<li data-end="1516" data-start="1455">
+<p data-end="1478" data-start="1457">如果有新的得分數字（如 <code data-end="1472" data-start="1469">2</code>、<code data-end="1476" data-start="1473">5</code>）：</p>
+<ul data-end="1516" data-start="1481">
+<li data-end="1497" data-start="1481">
+<p data-end="1497" data-start="1483">解析字串為整數，累加到總分。</p>
+</li>
+<li data-end="1516" data-start="1500">
+<p data-end="1516" data-start="1502">更新三位數顯示器的顏色狀態。</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul data-end="1868" data-start="1694">
+<li data-end="1736" data-start="1694">
+<p data-end="1736" data-start="1696">這段程式<strong data-end="1718" data-start="1700">不會產生分數，也不控制機器人</strong>，只負責「接收分數 → 顯示分數」。</p>
+</li>
+<li data-end="1810" data-start="1737">
+<p data-end="1810" data-start="1739">如果要配合上一段程式使用，<strong data-end="1785" data-start="1752">要保證 emitter 對應的 receiver 名稱一致</strong>，像這邊叫 <code data-end="1809" data-start="1791">"score_receiver"</code>。</p>
+</li>
+<li data-end="1868" data-start="1811">
+<p data-end="1868" data-start="1813">如果 7 段顯示器的材質名字對錯了（DEF 名稱沒對上），會顯示 <code data-end="1861" data-start="1846">找不到 XXX 這個DEF</code> 的錯誤訊息。</p>
+</li>
+</ul>
+<p></p>
+<br />Supervisor 控制程式分析 << <a href='Supervisor 控制程式分析.html'>Previous</a> <a href='期末總結.html'>Next</a> >> 期末總結</div>
+        
+    <!-- footer -->
+      <div class="container">
+        <div class="row pt-3 mx-auto">
+            <p>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+        </div>
+      </div>
+    <!-- for footer -->
+    
+        </div> <!-- for site wrap -->
+            <!-- <script src="../cmsimde/static/chimper/js/jquery-3.3.1.min.js"></script> -->
+            <script src="../cmsimde/static/chimper/js/jquery-migrate-3.0.1.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery-ui.js"></script>
+            <script src="../cmsimde/static/chimper/js/popper.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/bootstrap.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/owl.carousel.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.stellar.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.countdown.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.magnific-popup.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/bootstrap-datepicker.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/aos.js"></script>
+            <!--
+            <script src="../cmsimde/static/chimper/js/typed.js"></script>
+                    <script>
+                    var typed = new Typed('.typed-words', {
+                    strings: ["Web Apps"," WordPress"," Mobile Apps"],
+                    typeSpeed: 80,
+                    backSpeed: 80,
+                    backDelay: 4000,
+                    startDelay: 1000,
+                    loop: true,
+                    showCursor: true
+                    });
+                    </script>
+            -->
+            <script src="../cmsimde/static/chimper/js/main.js"></script>
+        
+<!-- 啟用 LaTeX equations 編輯 -->
+  <!-- <script>
+  MathJax = {
+    tex: {inlineMath: [['$', '$'], ['\(', '\)']]}
+  };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>-->
+    </body></html>
+        

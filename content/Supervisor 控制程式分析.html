@@ -1,0 +1,508 @@
+<!DOCTYPE html><html>
+        <head>
+        <title>cd_hw</title>
+        <meta charset="utf-8">
+<meta property="head" content="H2">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/css/bootstrap.min.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/css/magnific-popup.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/css/jquery-ui.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/css/owl.carousel.min.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/css/owl.theme.default.min.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/css/bootstrap-datepicker.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/flaticon/font/flaticon.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/css/aos.css">
+        <link rel="stylesheet" href="./../cmsimde/static/chimper/css/style.css">
+        <link rel="shortcut icon" href="./../cmsimde/static/favicons.png">
+        
+        <style type='text/css'>
+            .site-section {
+            background-color: #FFFF;
+            padding: 40px 40px;
+            }
+            body > div > div.dropdown.open {
+                display: block;
+            }
+        </style>
+    
+        <!-- <script src="./../cmsimde/static/jquery.js"></script> -->
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+        <script src="../cmsimde/static/chimper/js/jquery-3.3.1.min.js"></script>
+        <link rel="stylesheet" href="./../cmsimde/static/tipuesearch/css/normalize.min.css">
+        <script src="./../cmsimde/static/tipuesearch/tipuesearch_set.js"></script>
+        <script src="tipuesearch_content.js"></script>
+        <link rel="stylesheet" href="./../cmsimde/static/tipuesearch/css/tipuesearch.css">
+        <script src="./../cmsimde/static/tipuesearch/tipuesearch.js"></script>
+        <!-- for Wink3 客製化關閉 -->
+        <!--
+        <link rel="stylesheet" type="text/css" href="./../cmsimde/static/winkPlayer.css" />
+        <script type="text/javascript" src="./../cmsimde/static/winkPlayer.js"></script>
+        -->
+        <script>
+            /* original tipuesearch
+            $(document).ready(function() {
+                 $('#tipue_search_input').tipuesearch();
+            });
+            */
+            // customed doSearch
+            function doSearch() {
+                $('#tipue_search_input').tipuesearch({
+                    newWindow: true, 
+                    minimumLength: 2,
+                    wholeWords: false, // for search 中文
+                });
+            }
+            $(document).ready(doSearch);
+        </script>
+        
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shCore.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushBash.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushDiff.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushJScript.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushJava.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushPython.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushSql.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushHaxe.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushXml.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushPhp.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushPowerShell.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushLua.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushMojo.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushWbt.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushCpp.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushCss.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushCSharp.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushDart.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushRust.js"></script>
+<link type="text/css" rel="stylesheet" href="./../cmsimde/static/syntaxhighlighter/css/shCoreDefault.css"/>
+<script type="text/javascript">SyntaxHighlighter.all();</script>
+<!-- 暫時不用
+<script src="./../cmsimde/static/fengari-web.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/Cango-13v08-min.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/CangoAxes-4v01-min.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/gearUtils-05.js"></script>
+-->
+<!-- for Brython 暫時不用
+<script src="https://scrum-3.github.io/web/brython/brython.js"></script>
+<script src="https://scrum-3.github.io/web/brython/brython_stdlib.js"></script>
+-->
+<style>
+img.add_border {
+    border: 3px solid blue;
+}
+</style>
+
+</head>
+<body>
+<div class='container'><nav>
+        
+    <div class="site-wrap">
+
+    <div class="site-mobile-menu">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div>
+    
+            <header class="site-navbar py-4 bg-white" role="banner">
+              <div class="container">
+                <div class="row align-items-center">
+                <h1>hw-41223243協同產品設計實習</h1>
+                <div class="pl-4">
+                    <form>
+                    <input type="text" placeholder="Search" name="q" id="tipue_search_input" pattern=".{2,}" title="At least 2 characters" required>
+                    </form>
+                </div>
+                  <!-- <div class="col-11 col-xl-2">
+                    <h1 class="mb-0 site-logo"><a href="index.html" class="text-black h2 mb-0">hw-41223243協同產品設計實習</a></h1> 
+                  </div>
+                  -->
+                  <div class="col-12 col-md-10 d-none d-xl-block">
+                    <nav class="site-navigation position-relative text-right" role="navigation">
+    <ul class='site-menu js-clone-nav mr-auto d-none d-lg-block'>
+                        <li class="active has-children"><a href="index.html">Home</a>
+                        <ul class="dropdown">
+                            <li><a href="sitemap.html">SMap</a></li>
+                            <li><a href="./../reveal/index.html">reveal</a></li>
+                            <li><a href="./../blog/index.html">blog</a></li>
+                        </ul>
+                      </li>
+                     <li class='has-children'><a href='About.html'>About</a><ul class='dropdown'><li><a href='repo.html'>repo</a></li></ul><li class='has-children'><a href='Tasks.html'>Tasks</a><ul class='dropdown'><li><a href='task1.html'>task1</a><li><a href='task2.html'>task2</a><li><a href='task3.html'>task3</a><li><a href='task4.html'>task4</a><li><a href='task5.html'>task5</a><li><a href='task6.html'>task6</a></li></ul><li class='has-children'><a href='Homework.html'>Homework</a><ul class='dropdown'><li><a href='HW1.html'>HW1</a><li class='has-children'><a href='HW2.html'>HW2</a><ul class='dropdown'><li><a href='平面四連桿.html'>平面四連桿</a></li></ul><li><a href='HW3.html'>HW3</a></li></ul><li><a href='Midterm.html'>Midterm</a><li class='has-children'><a href='Exam.html'>Exam</a><ul class='dropdown'><li><a href='Exam1.html'>Exam1</a><li><a href='Exam2.html'>Exam2</a><li><a href='Exam3.html'>Exam3</a></li></ul><li class='has-children'><a href='Final.html'>Final</a><ul class='dropdown'><li><a href='投籃機與其輪車程式分析.html'>投籃機與其輪車程式分析</a><li><a href='Supervisor 控制程式分析.html'>Supervisor 控制程式分析</a><li><a href='籃框及其輪車、計分程式分析.html'>籃框及其輪車、計分程式分析</a></li></ul><li><a href='期末總結.html'>期末總結</a><li><a href='Brython.html'>Brython</a></li>
+                      </ul>
+                </nav>
+              </div>
+              <div class="d-inline-block d-xl-none ml-md-0 mr-auto py-3" style="position: relative; top: 3px;"><a href="#" class="site-menu-toggle js-menu-toggle text-black"><span class="icon-menu h3"></span></a></div>
+              </div>
+
+            </div>
+          </div>
+          
+        </header>
+    <div id="tipue_search_content">投籃機與其輪車程式分析 << <a href='投籃機與其輪車程式分析.html'>Previous</a> <a href='籃框及其輪車、計分程式分析.html'>Next</a> >> 籃框及其輪車、計分程式分析<br /><h1>Supervisor 控制程式分析</h1>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Supervisor, Keyboard
+import time
+import random
+import numpy as np
+import re
+
+# ----------------- 參數區 -----------------
+HOOP_CENTER = [0.622, -0.103, 0.742838]
+BALL_DEF_PATTERN = re.compile(r"Sphere_\d+")
+supervisor = Supervisor()
+timestep = int(supervisor.getBasicTimeStep())
+keyboard = Keyboard()
+keyboard.enable(timestep)
+
+sphere_radius = 0.1
+TRAJECTORY_POINT_RADIUS = 0.03      # 軌跡小球半徑
+TRAJECTORY_POINT_STEP = 0.12        # 軌跡點間最小距離
+TRAJECTORY_MAX_POINTS = 5           # 只保留5個軌跡點
+
+waiting_ball_def = None
+waiting_ball_info = None
+last_key_time = 0
+debounce_time = 0.5
+default_feed_pos = (-0.35, 0.0, 0.9)
+PRINT_INTERVAL = 0.2
+
+current_tracked_def = None
+last_print_time = time.time()
+
+# 軌跡資料
+trajectory_points = []  # [(pos, def_name)] 最多五個
+
+def axis_angle_to_rotation_matrix(axis, angle):
+    x, y, z = axis
+    c = np.cos(angle)
+    s = np.sin(angle)
+    C = 1 - c
+    return np.array([
+        [x*x*C + c,   x*y*C - z*s, x*z*C + y*s],
+        [y*x*C + z*s, y*y*C + c,   y*z*C - x*s],
+        [z*x*C - y*s, z*y*C + x*s, z*z*C + c]
+    ])
+
+def generate_valid_def_name(base_name="Sphere"):
+    timestamp = int(supervisor.getTime() * 1000)
+    return f"{base_name}_{timestamp}_{random.randint(0, 10000)}"
+
+def generate_random_color():
+    return random.random(), random.random(), random.random()
+
+def youbot_local_to_world(local_pos):
+    youbot_node = supervisor.getFromDef('youbot')
+    if youbot_node is None:
+        raise RuntimeError("找不到 DEF 為 youbot 的 Robot 物件")
+    youbot_translation = np.array(youbot_node.getField('translation').getSFVec3f())
+    youbot_rotation = youbot_node.getField('rotation').getSFRotation()
+    youbot_axis = youbot_rotation[:3]
+    youbot_angle = youbot_rotation[3]
+    youbot_rot_mat = axis_angle_to_rotation_matrix(youbot_axis, youbot_angle)
+    rotated = youbot_rot_mat @ np.array(local_pos)
+    world_pos = youbot_translation + rotated
+    return tuple(world_pos)
+
+def create_static_ball(def_name, world_pos, r, g, b):
+    sphere_string = f"""
+    DEF {def_name} Solid {{
+      translation {world_pos[0]} {world_pos[1]} {world_pos[2]}
+      contactMaterial "ball"
+      children [
+        Shape {{
+          geometry Sphere {{
+            radius {sphere_radius}
+          }}
+          appearance Appearance {{
+            material Material {{
+              diffuseColor {r} {g} {b}
+            }}
+          }}
+        }}
+      ]
+      boundingObject Sphere {{
+        radius {sphere_radius}
+      }}
+    }}
+    """
+    root = supervisor.getRoot()
+    children_field = root.getField("children")
+    children_field.importMFNodeFromString(-1, sphere_string)
+
+def create_dynamic_ball(def_name, world_pos, r, g, b):
+    sphere_string = f"""
+    DEF {def_name} Solid {{
+      translation {world_pos[0]} {world_pos[1]} {world_pos[2]}
+      contactMaterial "ball"
+      children [
+        Shape {{
+          geometry Sphere {{
+            radius {sphere_radius}
+          }}
+          appearance Appearance {{
+            material Material {{
+              diffuseColor {r} {g} {b}
+            }}
+          }}
+        }}
+      ]
+      boundingObject Sphere {{
+        radius {sphere_radius}
+      }}
+      physics Physics {{
+        mass 0.01
+        density -1
+      }}
+    }}
+    """
+    root = supervisor.getRoot()
+    children_field = root.getField("children")
+    children_field.importMFNodeFromString(-1, sphere_string)
+
+def create_trajectory_point(pos):
+    """
+    在pos位置新增一個小球作為拋物線軌跡點，回傳DEF名稱。
+    用Transform持有Shape，僅作視覺標記，不影響物理。
+    """
+    def_name = generate_valid_def_name("TrajectoryPt")
+    sphere_string = f"""
+    DEF {def_name} Transform {{
+      translation {pos[0]} {pos[1]} {pos[2]}
+      children [
+        Shape {{
+          geometry Sphere {{
+            radius {TRAJECTORY_POINT_RADIUS}
+          }}
+          appearance Appearance {{
+            material Material {{
+              diffuseColor 1 0.7 0
+              transparency 0.3
+            }}
+          }}
+        }}
+      ]
+    }}
+    """
+    root = supervisor.getRoot()
+    children_field = root.getField("children")
+    children_field.importMFNodeFromString(-1, sphere_string)
+    return def_name
+
+def delete_trajectory_points():
+    """刪除所有軌跡點"""
+    global trajectory_points
+    for _, def_name in trajectory_points:
+        node = supervisor.getFromDef(def_name)
+        if node:
+            node.remove()
+    trajectory_points.clear()
+
+def create_static_sphere(supervisor, x, y, z):
+    global waiting_ball_def, waiting_ball_info
+    def_name = generate_valid_def_name()
+    waiting_ball_def = def_name
+    r, g, b = generate_random_color()
+    world_pos = youbot_local_to_world((x, y, z))
+    waiting_ball_info = (world_pos, r, g, b)
+    create_static_ball(def_name, world_pos, r, g, b)
+
+def activate_dynamic_ball():
+    global waiting_ball_def, waiting_ball_info
+    if waiting_ball_def is None or waiting_ball_info is None:
+        return
+    ball_node = supervisor.getFromDef(waiting_ball_def)
+    if ball_node is not None:
+        ball_node.remove()
+        supervisor.step(int(supervisor.getBasicTimeStep()))
+    world_pos, r, g, b = waiting_ball_info
+    create_dynamic_ball(waiting_ball_def, world_pos, r, g, b)
+    waiting_ball_def = None
+    waiting_ball_info = None
+
+def is_ball_landed(pos, threshold_z=0.13):
+    """當球z接近地面時視為落地"""
+    return pos[2] &lt; threshold_z
+
+print("按 A 產生一顆靜止球，按 M 讓球變 dynamic 可擊出（最多只有5個軌跡點跟著球跑，球落地後軌跡自動消失）")
+
+while supervisor.step(timestep) != -1:
+    key = keyboard.getKey()
+    current_time = time.time()
+    # 產生球
+    if key == ord('A') and (current_time - last_key_time &gt;= debounce_time):
+        if waiting_ball_def is None:
+            create_static_sphere(supervisor, *default_feed_pos)
+            current_tracked_def = waiting_ball_def
+            delete_trajectory_points()  # 新球產生時清除舊軌跡
+        else:
+            print("還有一顆球等待擊出，請先擊出再產生新球。")
+        last_key_time = current_time
+    # 讓球變動態
+    if key == ord('M') and (current_time - last_key_time &gt;= debounce_time):
+        activate_dynamic_ball()
+        last_key_time = current_time
+
+    # 拋物線軌跡追蹤
+    if current_tracked_def is not None:
+        ball_node = supervisor.getFromDef(current_tracked_def)
+        if ball_node is not None:
+            pos = ball_node.getPosition()
+            # 每 PRINT_INTERVAL 印座標
+            if current_time - last_print_time &gt;= PRINT_INTERVAL:
+                #print(f"球 {current_tracked_def} 絕對座標: [{pos[0]:.4f}, {pos[1]:.4f}, {pos[2]:.4f}]")
+                last_print_time = current_time
+            # 軌跡點：每隔一段距離才加一個，僅保留5個點
+            if (not trajectory_points) or np.linalg.norm(np.array(pos) - np.array(trajectory_points[-1][0])) &gt; TRAJECTORY_POINT_STEP:
+                def_name = create_trajectory_point(pos)
+                trajectory_points.append((pos, def_name))
+                if len(trajectory_points) &gt; TRAJECTORY_MAX_POINTS:
+                    # 移除最舊的點
+                    _, old_def = trajectory_points.pop(0)
+                    node = supervisor.getFromDef(old_def)
+                    if node:
+                        node.remove()
+            # 若球落地，自動清除軌跡
+            if is_ball_landed(pos):
+                delete_trajectory_points()
+        else:
+            # 球消失，停止追蹤並清除軌跡
+            delete_trajectory_points()
+            current_tracked_def = None</pre>
+<p><a href="./../downloads/feed_ball.zip">feed_ball.zip</a></p>
+<ul>
+<li data-end="178" data-start="143">
+<p data-end="178" data-start="145"><code data-end="169" data-start="145">create_static_sphere()</code> → 建立靜止球。</p>
+</li>
+<li data-end="234" data-start="179">
+<p data-end="234" data-start="181"><code data-end="206" data-start="181">activate_dynamic_ball()</code> → 將靜止球刪除再重建為有 Physics 的動態球。</p>
+</li>
+<li data-end="291" data-start="235">
+<p data-end="291" data-start="237"><code data-end="258" data-start="237">current_tracked_def</code> 配合 <code data-end="281" data-start="262">trajectory_points</code> 管理拋物線視覺點。</p>
+</li>
+<li data-end="312" data-start="292">
+<p data-end="312" data-start="294">球落地時清軌跡點、球消失時解除追蹤。</p>
+</li>
+</ul>
+<p>參數與初始化</p>
+<p>HOOP_CENTER = [0.622, -0.103, 0.742838]<br/>BALL_DEF_PATTERN = re.compile(r"Sphere_\d+")<br/>supervisor = Supervisor()<br/>timestep = int(supervisor.getBasicTimeStep())<br/>keyboard = Keyboard()<br/>keyboard.enable(timestep)</p>
+<ul data-end="416" data-start="358">
+<li data-end="374" data-start="358">
+<p data-end="374" data-start="360">設定籃框中心位置（可擴充用）</p>
+</li>
+<li data-end="395" data-start="375">
+<p data-end="395" data-start="377">使用正則表達式找出球的 DEF 名稱</p>
+</li>
+<li data-end="416" data-start="396">
+<p data-end="416" data-start="398">啟用 Webots 監督者與鍵盤控制</p>
+</li>
+</ul>
+<p>核心參數與狀態變數</p>
+<p>sphere_radius = 0.1<br/>TRAJECTORY_POINT_RADIUS = 0.03<br/>TRAJECTORY_POINT_STEP = 0.12<br/>TRAJECTORY_MAX_POINTS = 5</p>
+<ul data-end="617" data-start="568">
+<li data-end="588" data-start="568">
+<p data-end="588" data-start="570">設定球與軌跡點的大小、間距與數量限制</p>
+</li>
+<li data-end="617" data-start="589">
+<p data-end="617" data-start="591">追蹤當前是否有未發射的球、其資訊，以及追蹤的球 ID</p>
+</li>
+</ul>
+<p>工具函式</p>
+<p>def youbot_local_to_world(local_pos):<br/> # 取得 youbot 的位置與朝向後進行座標轉換</p>
+<p>建立球體函式（靜止/動態）</p>
+<p>def create_static_ball(...)<br/>def create_dynamic_ball(...)</p>
+<p>利用 Webots 的 <code data-end="887" data-start="863">importMFNodeFromString</code> 方法在場景中加入球（<code data-end="905" data-start="898">Solid</code>）</p>
+<p>軌跡球建立與移除</p>
+<p>def create_trajectory_point(pos)<br/>def delete_trajectory_points()</p>
+<p>建立小型透明球標示軌跡（<code data-end="1029" data-start="1018">Transform</code> + <code data-end="1039" data-start="1032">Shape</code>），僅視覺效果</p>
+<p>按鍵邏輯與操作</p>
+<p>if key == ord('A') ...</p>
+<p></p>
+<ul>
+<li data-end="1141" data-start="1113">
+<p data-end="1141" data-start="1115">按 <code data-end="1120" data-start="1117">A</code> 鍵產生一顆靜止球（球會出現在機器人上方）</p>
+</li>
+<li data-end="1162" data-start="1142">
+<p data-end="1162" data-start="1144">若還有一顆未擊出的球，不允許產生新球</p>
+</li>
+</ul>
+<p>if key == ord('M') ...</p>
+<ul>
+<li data-end="1162" data-start="1142">
+<p data-end="1162" data-start="1144">按 <code data-end="1209" data-start="1206">M</code> 鍵讓目前靜止球「啟動物理引擎」→ 變成動態球，可以掉落</p>
+</li>
+</ul>
+<p>軌跡追蹤核心邏輯</p>
+<p>if current_tracked_def is not None:<br/> ball_node = supervisor.getFromDef(current_tracked_def)</p>
+<p data-end="1391" data-start="1378">每一個 timestep：</p>
+<ul data-end="1507" data-start="1394">
+<li data-end="1409" data-start="1394">
+<p data-end="1409" data-start="1396">讀取球當前位置 <code data-end="1409" data-start="1404">pos</code></p>
+</li>
+<li data-end="1457" data-start="1412">
+<p data-end="1457" data-start="1414">若距離上一個軌跡點大於 <code data-end="1449" data-start="1426">TRAJECTORY_POINT_STEP</code>，就新增一個新點</p>
+</li>
+<li data-end="1477" data-start="1460">
+<p data-end="1477" data-start="1462">若超過 5 個點，移除最舊的點</p>
+</li>
+<li data-end="1507" data-start="1480">
+<p data-end="1507" data-start="1482">若球落地（z 低於閾值），刪除所有軌跡點，結束追蹤</p>
+</li>
+</ul>
+<p></p>
+<p></p>
+<p></p>
+<p><br/><br/></p>
+<br />投籃機與其輪車程式分析 << <a href='投籃機與其輪車程式分析.html'>Previous</a> <a href='籃框及其輪車、計分程式分析.html'>Next</a> >> 籃框及其輪車、計分程式分析</div>
+        
+    <!-- footer -->
+      <div class="container">
+        <div class="row pt-3 mx-auto">
+            <p>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+        </div>
+      </div>
+    <!-- for footer -->
+    
+        </div> <!-- for site wrap -->
+            <!-- <script src="../cmsimde/static/chimper/js/jquery-3.3.1.min.js"></script> -->
+            <script src="../cmsimde/static/chimper/js/jquery-migrate-3.0.1.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery-ui.js"></script>
+            <script src="../cmsimde/static/chimper/js/popper.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/bootstrap.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/owl.carousel.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.stellar.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.countdown.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.magnific-popup.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/bootstrap-datepicker.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/aos.js"></script>
+            <!--
+            <script src="../cmsimde/static/chimper/js/typed.js"></script>
+                    <script>
+                    var typed = new Typed('.typed-words', {
+                    strings: ["Web Apps"," WordPress"," Mobile Apps"],
+                    typeSpeed: 80,
+                    backSpeed: 80,
+                    backDelay: 4000,
+                    startDelay: 1000,
+                    loop: true,
+                    showCursor: true
+                    });
+                    </script>
+            -->
+            <script src="../cmsimde/static/chimper/js/main.js"></script>
+        
+<!-- 啟用 LaTeX equations 編輯 -->
+  <!-- <script>
+  MathJax = {
+    tex: {inlineMath: [['$', '$'], ['\(', '\)']]}
+  };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>-->
+    </body></html>
+        
