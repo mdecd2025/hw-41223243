@@ -15,9 +15,12 @@
 <p></p>
 <h2>repo</h2>
 <p><img alt="" height="216" src="/images/螢幕擷取畫面 2025-04-20 124134.png" width="618"/></p>
-<p>除了上學期所使用的python310外 還額外新增了python313。</p><h1>Tasks</h1>
-<p>???</p>
-<h2>task1</h2>
+<p>除了上學期所使用的python310外 還額外新增了python313。</p>
+<h1>Tasks</h1>
+<p>本地端更新(2025/6/19)</p>
+<p>由於本地端與遠端版本蝦差過大，需使用</p>
+<p>git fetch origin<br/>git reset --hard origin/main</p>
+<p>來拉取遠端的資料，並覆蓋本地端。</p><h2>task1</h2>
 <p>組員名單:<a href="https://github.com/mdecd2025/hw-leeshaowei0716">41223221</a>、<a href="https://github.com/mdecd2025/hw-41223212">41223212</a>、<a href="https://github.com/mdecd2025/hw-41223211">41223211</a>、<a href="https://github.com/mdecd2025/hw-41223243">41223243</a>、<a href="https://github.com/mdecd2025/hw-41223245">41223245</a>、<a href="https://github.com/mdecd2025/hw-41223251">41223251</a>。</p>
 <p>首先是初版，這個版本有些問題，就是他會額外找出兩個不相關的，第一個是scrm-1與github.com，而且他無法根據使用者的名稱來自動修改網址。以我的為例:<a href="https://github.com/mdecd2025/hw-41223243我的能夠成">https://github.com/mdecd2025/hw-41223243</a></p>
 <p>我的能跑出來是因為我的使用者名稱是41223243，而我們的組員當中有些人的使用者名稱不等於學號，所以拿第一版去跑Brython，他會假設所有人都是<a href="https://github.com/mdecd2025/hw-學號這個格式，">https://github.com/mdecd2025/hw-學號 </a>這個樣子，那如果hw-後方不是學號他就讀不到。</p>
@@ -146,23 +149,64 @@ fetch_data()</pre>
 <h2>HW1</h2>
 <p>HW1 (5%): <span style="background-color: #ffff00;">建立由 Box 組成的平面四連桿機構 Webots 模擬場景</span></p>
 <p>操作影片標題: 國立虎尾科技大學 - 機械設計工程系 - cd2025 HW1 - 學員學號</p>
+<p>建造一個robot，然後於children中增加兩個hinge joint與1個solid。</p>
+<p>於solid的部分，將其改名為base，並於solid的<span>children，右鍵新增一個shape，然後於geometry處對他按右鍵新增</span><span>box，將X的部分調為1米。</span></p>
+<p><span>※之後將不再贅述建立box的步驟。</span></p>
+<p><span>任選一hinge joint，將選擇的hinge joint改名為hinge joint1，另一個改名為hinge joint4。<br/></span></p>
+<p>進入hinge joint1的主線程下方，選擇它的endpoint右鍵新增<span>solid，然後調整數值。</span></p>
+<p><span>rotation的部分隨意調整，屬於初始角度。</span></p>
+<p><span>然後children處新增pose與hinge joint，將hinge joint改名為joint2。</span></p>
+<p><span>然後是joint2的部分與joint1的步驟相同，一樣在children新增solid然後建立pose(box中心)以及一個hinge joint，然後改名為joint3，然後建立第三個box</span></p>
+<p>至此box部分結束，接著開始設置jointparameters部分。</p>
+<p><span>jointparameters部分其實就是連趕座標相對於原始座標的位置，即與0.0.0相對的位置，例如link1的座標跟原點相比，往負的X移動0.5m，achor的X部分就改為-0.5m，lin2與3都是這樣設置。</span></p>
+<p><span><span>除此之外，還要再joint1放置一個旋轉馬達，並命名為motor(控制程式中的命名)</span></span></p>
+<p><span><span>然後是幫link1、link2、link3建立boundingObject，這個東西的作用就是定義物品物理碰撞的欄位。</span></span></p>
+<p><span><span>我的設置在下方圖片都可以查看。</span></span></p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/3IBjiNI6vq4?si=JDIRYozS9gNS3QhH" title="YouTube video player" width="560"></iframe></p>
+<p>圖片部分</p>
+<p>link1</p>
+<p><img alt="" height="103" src="/images/HW1-1.png" width="314"/></p>
+<p><img alt="" height="88" src="/images/HW1-1-1.png" width="289"/></p>
+<p><span>boundingObject</span></p>
+<p><span><img alt="" height="254" src="/images/HW1-11.png" width="231"/></span></p>
+<p>link2</p>
+<p><img alt="" height="123" src="/images/HW1-2.png" width="323"/></p>
+<p><img alt="" height="93" src="/images/HW1-2-1.png" width="294"/></p>
+<p><span>boundingObject</span></p>
+<p><span><img alt="" height="356" src="/images/HW1-21.png" width="322"/></span></p>
+<p>link3</p>
+<p><img alt="" height="112" src="/images/HW1-3.png" width="279"/></p>
+<p><img alt="" height="74" src="/images/HW1-3-1.png" width="258"/></p>
+<p><span>boundingObject</span></p>
+<p><span><img alt="" height="323" src="/images/HW1-31.png" width="232"/></span></p>
+<p>最後是補上joint4。</p>
+<p><img alt="" height="326" src="/images/HW1-4.png" width="294"/></p>
+<p><br/>補上影片中未模擬的部分</p>
 <p></p>
-<p>好難<br/>補上影片中未模擬的部分 <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/C6RJA2p2-ss?si=0b2tNsgx8VoAHfl1" title="YouTube video player" width="560"></iframe> <br/><br/></p><h2>HW2</h2>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/C6RJA2p2-ss?si=0b2tNsgx8VoAHfl1" title="YouTube video player" width="560"></iframe> <br/><br/></p>
+<h2>HW2</h2>
 <p>HW2 (5%): <span style="background-color: #ffff00;">建立由 CAD 繪製零件組成的平面四連桿機構 Webots 模擬場景</span></p>
 <p>操作影片標題: 國立虎尾科技大學 - 機械設計工程系 - cd2025 HW2 - 學員學號</p>
+<p><span>1.依照線架構約束組裝完成後存檔，並輸出存檔一個stl檔</span></p>
+<p><span>2.將stl使用"split_stl_to_obj_scale2"進行轉obj檔，在4link.stl這個地方做更改，改為自己取的名字.stl</span></p>
+<p>4.進入webot後，先加入Robot群組</p>
+<p>5.在Robot群組下的children加入兩個Solid作為base，再加入兩個Hingejoint一個做為joint1一個為joint4</p>
+<p>6.webots的操作步驟皆錄至於影片當中。與HW1的操作相差不多，只是box變成由自己於其他CAD軟體中繪製的物件，看是要透過cadshape匯入obj檔案，又或是從shape-&gt;mesh匯入檔案，本人選擇後者，方便更改顏色。</p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/PqlUI7qmsds?si=6eLmgoGC0cYA3AOz" title="YouTube video player" width="560"></iframe></p>
 <p>心得:套用上HW1的概念，把box用mesh取代，就會容易上許多了，我最開始搞不懂的是，為甚麼尺寸進到webots理會變成40M，導致模擬不正常，只會自由落體，有改尺寸後就正常多了。</p>
-<p></p><h3>平面四連桿</h3>
+<p></p>
+<h3>平面四連桿</h3>
 <p>所有零件檔:<a href="/downloads/4連桿零件及本體.zip">4連桿零件及本體.zip</a><br/>此為壓縮檔，解壓後所獲得的內容含6個零件，1個線檔與1個組合檔。</p>
 <p>影片內容 <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/In0v2c-fJpA?si=Yq9qxUl_wM5Q7gdr" title="YouTube video player" width="560"></iframe></p>
-<p></p><h2>HW3</h2>
+<p></p>
+<h2>HW3</h2>
 <p>HW3 (20%):<span style="background-color: #ffff00;">建立 Webots 桌上籃球遊戲機模擬系統</span></p>
 <p>操作影片標題: 國立虎尾科技大學 - 機械設計工程系 - cd2025 HW3 - 學員學號</p>
 <p>操作影片，含模擬。</p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/03EhcySobtc?si=6vJ5YIrQ_paDt4IN" title="YouTube video player" width="560"></iframe></p>
 <p>心得:與HW2雷同，比較熟悉後就不覺得特別難，困難點是在裝配時的數值調整。</p>
-<p></p><h1>Midterm</h1>
+<p></p>
+<h1>Midterm</h1>
 <p>本課程所繳交的期中成績為學員自評之學習期望成績.</p>
 <p>期中考週的自評期望成績繳交流程:</p>
 <ol>
@@ -179,7 +223,8 @@ fetch_data()</pre>
 <p>期中自評影片:</p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/IHJXmbsWl28?si=L4ZbDEx2_yUJYWFH" title="YouTube video player" width="560"></iframe></p>
 <p>大略展示我所完成的作業，因為進度落後加上排錯中，故HW2尚未完成。</p>
-<p style="padding-left: 30px;"></p><h1>Exam</h1>
+<p style="padding-left: 30px;"></p>
+<h1>Exam</h1>
 <p>Exam1 (10%): 建立 Webots 基本物件模擬場景</p>
 <p style="padding-left: 30px;">各學員利用 Webots R2025a 套件中的 Shape 物件, 隨堂建立指定的機電系統模擬場景, 並利用 Python 程式進行互動控制.</p>
 <p>Exam2 (10%): 利用 CAD 零組件建立模擬場景 </p>
@@ -231,7 +276,8 @@ fetch_data()</pre>
 <p><span><span><img alt="" height="169" src="/images/11.png" width="297"/></span></span></p>
 <p>以上設置完成後套入<a href="/downloads/fourbar_controller6.zip">這個控制程式</a>(注意請務必放置於controllers當中，且程式名稱需與資料夾相同)然後在robot的controlle當中開啟即可以模擬。</p>
 <p><img alt="" height="311" src="/images/12.png" width="264"/></p>
-<p>心得:HW1的翻版，pose這個功能運用得當，然後知道該如何更改rotation並且知道angle換算rad就不會遇到太多問題。</p><h2>Exam2</h2>
+<p>心得:HW1的翻版，pose這個功能運用得當，然後知道該如何更改rotation並且知道angle換算rad就不會遇到太多問題。</p>
+<h2>Exam2</h2>
 <p>Exam2 (10%): 利用 CAD 零組件建立模擬場景</p>
 <p>操作影片標題: 國立虎尾科技大學 - 機械設計工程系 - cd2025 Exam2 - 學員學號</p>
 <p><a href="/downloads/exam2 .zip">exam2</a></p>
@@ -243,7 +289,8 @@ fetch_data()</pre>
 <p>6.webots的操作步驟皆路至於影片當中。與exam的操作相差不多，只是box變成由自己於其他CAD軟體中繪製的物件，看是要透過cadshape匯入obj檔案，又或是從shape-&gt;mesh匯入檔案，本人選擇後者，方便更改顏色。</p>
 <p>7.著重提一下<span>jointparameters中的anchor數值的設置。joint1為0,0,0、joint2為1.0458,0.9753,0、joint3為1.8008,2.9884,0。這個數值可由solveSpace中進行確定，即joint的位置距離x,y,z軸的距離。</span></p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/Iniv79iY-Aw?si=XutzJKOwgFXswwsY" title="YouTube video player" width="560"></iframe></p>
-<p>心得:與HW2雷同，只是桿長與起始角度有所限制，不算難。</p><h2>Exam3</h2>
+<p>心得:與HW2雷同，只是桿長與起始角度有所限制，不算難。</p>
+<h2>Exam3</h2>
 <p>Exam3 (20%): Webots 機電模擬場景的協同設計</p>
 <p>操作影片標題: 國立虎尾科技大學 - 機械設計工程系 - cd2025 Exam3 - 學員學號</p>
 <p>1.先將ipv6改為事先規範過的個人ipv6，再將自己倉儲中的init.py檔中的ip改為規範的ipv6</p>
@@ -251,22 +298,793 @@ fetch_data()</pre>
 <p>3.使用http://localhost:1234/index.html</p>
 <p>4.將下方網址輸入的localhost改為規範的ipv6。</p>
 <p>第一部影片為瀏覽器上模擬，第二部為利用cmd開啟串流功能。</p>
-<p><br/>心得:實際上更多是卡在串流部分，自己在試的時候，經常吃不到規定的ipv6，結果後來檢查儀下才發現沒有把ipv6用[]框住，導致瀏覽器根本讀不到。挺搞笑又挺搞人心態的。</p>
+<p><br/>心得:實際上更多是卡在串流部分，自己在試的時候，經常吃不到規定的ipv6，結果後來檢查之下才發現沒有把ipv6用[]框住，導致瀏覽器根本讀不到。挺搞笑又挺搞人心態的。</p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/nPcajDfuA2M?si=jpxQX_dkJLxDdXG6" title="YouTube video player" width="560"></iframe></p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/EEGhHzF5vkc?si=MTz_jvfA4hlmx7ev" title="YouTube video player" width="560"></iframe></p>
 <p>exam3-2</p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/9ylDmU6J8_M?si=mkGHlQ70BMejkv3w" title="YouTube video player" width="560"></iframe></p>
 <p>exam3-3</p>
 <p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/WzaNxooqETE?si=i4RDgmpl5oISBJ_a" title="YouTube video player" width="560"></iframe></p>
-<p></p><h1>Final</h1>
+<p></p>
+<h1>Final</h1>
 <p><span>期末協同專案執行過程影片、簡報與 PDf 報告檔案 (六人一組) (30%)</span></p>
 <p><span>題目: <span style="background-color: #ccffcc;">Webots 動態投籃模擬系統的協同設計</span></span></p>
 <p><span>說明: </span></p>
 <p style="padding-left: 30px;"><span>籃框架被配置在一定範圍內, 可隨機慢速前進、後退及左右擺動, 投籃機構系統帶有一定數量的籃球, 被配置在可自由移動的輪車上.</span></p>
 <p style="padding-left: 30px;"><span>操作者可利用鍵盤特定按鍵控制投籃輪車的移動並發射投籃, 每投出一球後系統透過記分板進行計分, 並由送球機構進行補球或移動輪車取球, 遊戲可進行至全部數量籃球投完為止.</span></p>
+<p style="padding-left: 30px;"><span></span></p>
 <p>請將期末協同專案執行過程、內容與心得, 製作成影片，配合字幕上傳至 Youtube 後嵌入各階段的期末報告頁面中.</p>
 <p>影片標題: <span style="background-color: #ffff00;">國立虎尾科技大學 - 機械設計工程系 - cd2025 期末報告 - 學員學號 - 各階段影片主題<br/></span></p>
-<h1>Brython</h1>
+<p><span style="background-color: #ffff00;"></span></p>
+<p></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/YJ06fjxCSU0?si=f2KA-vagqU3ALgTF" title="YouTube video player" width="560"></iframe></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/12J9qm32pJQ?si=ZsESO3Hz3WGIHrWh" title="YouTube video player" width="560"></iframe></p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/nA7_NVboh0s?si=gEi4-YDAco3UVh4T" title="YouTube video player" width="560"></iframe></p>
+<p>藉由M跟K來控制投球機的發射，而上下左右則可以控制投球機下方的輪車移動。</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/24chXa1bfHo?si=wtc0-7gU9f3J37gr" title="YouTube video player" width="560"></iframe></p>
+<p><a href="/downloads/final.zip">期末報告與世界檔案</a></p>
+<p><a href="/downloads/協同產品設計實習.pdf">協同產品設計實習期末報告.pdf</a></p>
+<p>心得:本學期著重於教學webots的模擬與操作方式，這個過程可以說是困 難重重，不單只是要繪製物件、還要去留意webots裡的每個部件的 安排，然後還要匯入控制程式，有時候模以出來的結果與範例不同， 又要一個一個東西檢查，非常麻煩，甚至有時候可能是物件的名稱與 控制程式不同，可能差個一個字，就會導致無法模擬，然後第一時間 想到的也不會是這問題。 這個期末報告光是重新建立然後刪除錯誤世界這一程序，我就走了 4、5次以上後來真的是對著範例研究很久，才勉強弄出來。 而且還常常因為python的某些套件沒有安裝，導致某些控制程式的失 效，我的狀況更慘，webots甚至不會去讀我可攜裡的ptyhon套件， 而是讀取我電腦裡很久之前下載的，導致套件東缺稀少，東西一開始 模擬就閃退，後來問半天才找到指定webots使用指定python方式， 才解決閃退問題。 總結來說webots雖然開源，但這個程式的操作門檻實在不算低，裡 面的東西牽一髮動全身，少任何一個東西都能導致模擬失敗，但也讓 我藉機學到做這種東西最重要的一點，就是耐心跟細心，當然除此之外，這個webots也會在日後成為我的工具之一，學了不用，那沒有學的必要，必須感謝老師介紹這一個工具給我們。</p>
+<p></p><h2>投籃機與其輪車程式分析</h2>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Robot, Keyboard
+
+# Constants
+TIME_STEP = 32
+MAX_VELOCITY = 10.0
+ANGLE_STEP = 40 * 3.14159 / 180  # 40 degrees in radians
+POSITION_M = ANGLE_STEP          # +40 deg
+POSITION_K = 0.0                 # 0 deg
+
+# Initialize robot and keyboard
+robot = Robot()
+timestep = int(robot.getBasicTimeStep())
+keyboard = Keyboard()
+keyboard.enable(timestep)
+
+# Get devices
+try:
+    motor = robot.getDevice('motor1')
+    sensor = robot.getDevice('motor1_sensor')
+    sensor.enable(timestep)
+    mechanism_enabled = True
+except Exception:
+    mechanism_enabled = False
+
+# Wheel setup (if available)
+try:
+    wheels = [robot.getDevice(f"wheel{i+1}") for i in range(4)]
+    for wheel in wheels:
+        wheel.setPosition(float('inf'))  # Infinite position to enable velocity control
+        wheel.setVelocity(0)  # Start with zero velocity
+    platform_enabled = True
+except Exception:
+    platform_enabled = False
+
+# State machine: which key is allowed to trigger
+current_state = "allow_m"  # Start by allowing 'm'
+
+# Key debounce
+key_pressed = {
+    'k': False,
+    'm': False
+}
+
+while robot.step(timestep) != -1:
+    key = keyboard.getKey()
+    
+    # Platform control
+    if platform_enabled:
+        if key == Keyboard.UP:
+            for wheel in wheels:
+                wheel.setVelocity(MAX_VELOCITY)
+        elif key == Keyboard.DOWN:
+            for wheel in wheels:
+                wheel.setVelocity(-MAX_VELOCITY)
+        elif key == Keyboard.LEFT:
+            wheels[0].setVelocity(MAX_VELOCITY)
+            wheels[1].setVelocity(-MAX_VELOCITY)
+            wheels[2].setVelocity(MAX_VELOCITY)
+            wheels[3].setVelocity(-MAX_VELOCITY)
+        elif key == Keyboard.RIGHT:
+            wheels[0].setVelocity(-MAX_VELOCITY)
+            wheels[1].setVelocity(MAX_VELOCITY)
+            wheels[2].setVelocity(-MAX_VELOCITY)
+            wheels[3].setVelocity(MAX_VELOCITY)
+        elif key == ord('Q') or key == ord('q'):
+            print("Exiting...")
+            break
+        else:
+            for wheel in wheels:
+                wheel.setVelocity(0)
+
+    # Motor key control
+    if mechanism_enabled:
+        # Read current motor position (not for relative, but for debug)
+        _current_motor_position = sensor.getValue()
+
+        # M key: only take action if allowed and not held
+        if key == ord('M') or key == ord('m'):
+            if not key_pressed['m'] and current_state == "allow_m":
+                motor.setPosition(POSITION_M)
+                current_state = "allow_k"
+            key_pressed['m'] = True
+        else:
+            key_pressed['m'] = False
+
+        # K key: only take action if allowed and not held
+        if key == ord('K') or key == ord('k'):
+            if not key_pressed['k'] and current_state == "allow_k":
+                motor.setPosition(POSITION_K)
+                current_state = "allow_m"
+            key_pressed['k'] = True
+        else:
+            key_pressed['k'] = False</pre>
+<p><a href="/downloads/fourbar_controller.zip">fourbar_controller.zip</a></p>
+<p>設定馬達要移動的角度值（弧度制）。</p>
+<p>ANGLE_STEP = 40 * 3.14159 / 180 # 約 0.698 rad（40度）<br/>POSITION_M = ANGLE_STEP # 按 M 時設定馬達位置<br/>POSITION_K = 0.0 # 按 K 時設定馬達位置</p>
+<p>嘗試取得名為 <code data-end="701" data-start="691">'motor1'</code> 的旋轉馬達與其對應位置感測器（encoder），若失敗，跳過此功能</p>
+<p>motor = robot.getDevice('motor1')<br/>sensor = robot.getDevice('motor1_sensor')</p>
+<p>按下 <code data-end="887" data-start="884">M</code> 時會讓馬達轉到 40 度，但只有當目前狀態允許（<code data-end="921" data-start="912">allow_m</code>）時才執行。</p>
+<p>一次只能觸發一次：避免按鍵長按重複觸發。</p>
+<p>if key == ord('M') and current_state == "allow_m":<br/> motor.setPosition(POSITION_M)<br/> current_state = "allow_k"</p>
+<p>每個輪子設為無限旋轉（velocity control 模式)</p>
+<p>利用方向鍵控制移動：</p>
+<p><code data-end="1102" data-start="1099">↑</code>：前進</p>
+<p><code data-end="1113" data-start="1110">↓</code>：後退</p>
+<p><code data-end="1124" data-start="1121">←</code>：轉左（左右輪相反方向）</p>
+<p><code data-end="1144" data-start="1141">→</code>：轉右</p>
+<p>防止使用者連續按同一鍵造成重複設定指令。</p>
+<p>current_state = "allow_m" # 只能先按 M<br/># M 按過 → allow_k，K 按過 → allow_m，如此循環</p>
+<p></p>
+<h2>Supervisor 控制程式分析</h2>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Supervisor, Keyboard
+import time
+import random
+import numpy as np
+import re
+
+# ----------------- 參數區 -----------------
+HOOP_CENTER = [0.622, -0.103, 0.742838]
+BALL_DEF_PATTERN = re.compile(r"Sphere_\d+")
+supervisor = Supervisor()
+timestep = int(supervisor.getBasicTimeStep())
+keyboard = Keyboard()
+keyboard.enable(timestep)
+
+sphere_radius = 0.1
+TRAJECTORY_POINT_RADIUS = 0.03      # 軌跡小球半徑
+TRAJECTORY_POINT_STEP = 0.12        # 軌跡點間最小距離
+TRAJECTORY_MAX_POINTS = 5           # 只保留5個軌跡點
+
+waiting_ball_def = None
+waiting_ball_info = None
+last_key_time = 0
+debounce_time = 0.5
+default_feed_pos = (-0.35, 0.0, 0.9)
+PRINT_INTERVAL = 0.2
+
+current_tracked_def = None
+last_print_time = time.time()
+
+# 軌跡資料
+trajectory_points = []  # [(pos, def_name)] 最多五個
+
+def axis_angle_to_rotation_matrix(axis, angle):
+    x, y, z = axis
+    c = np.cos(angle)
+    s = np.sin(angle)
+    C = 1 - c
+    return np.array([
+        [x*x*C + c,   x*y*C - z*s, x*z*C + y*s],
+        [y*x*C + z*s, y*y*C + c,   y*z*C - x*s],
+        [z*x*C - y*s, z*y*C + x*s, z*z*C + c]
+    ])
+
+def generate_valid_def_name(base_name="Sphere"):
+    timestamp = int(supervisor.getTime() * 1000)
+    return f"{base_name}_{timestamp}_{random.randint(0, 10000)}"
+
+def generate_random_color():
+    return random.random(), random.random(), random.random()
+
+def youbot_local_to_world(local_pos):
+    youbot_node = supervisor.getFromDef('youbot')
+    if youbot_node is None:
+        raise RuntimeError("找不到 DEF 為 youbot 的 Robot 物件")
+    youbot_translation = np.array(youbot_node.getField('translation').getSFVec3f())
+    youbot_rotation = youbot_node.getField('rotation').getSFRotation()
+    youbot_axis = youbot_rotation[:3]
+    youbot_angle = youbot_rotation[3]
+    youbot_rot_mat = axis_angle_to_rotation_matrix(youbot_axis, youbot_angle)
+    rotated = youbot_rot_mat @ np.array(local_pos)
+    world_pos = youbot_translation + rotated
+    return tuple(world_pos)
+
+def create_static_ball(def_name, world_pos, r, g, b):
+    sphere_string = f"""
+    DEF {def_name} Solid {{
+      translation {world_pos[0]} {world_pos[1]} {world_pos[2]}
+      contactMaterial "ball"
+      children [
+        Shape {{
+          geometry Sphere {{
+            radius {sphere_radius}
+          }}
+          appearance Appearance {{
+            material Material {{
+              diffuseColor {r} {g} {b}
+            }}
+          }}
+        }}
+      ]
+      boundingObject Sphere {{
+        radius {sphere_radius}
+      }}
+    }}
+    """
+    root = supervisor.getRoot()
+    children_field = root.getField("children")
+    children_field.importMFNodeFromString(-1, sphere_string)
+
+def create_dynamic_ball(def_name, world_pos, r, g, b):
+    sphere_string = f"""
+    DEF {def_name} Solid {{
+      translation {world_pos[0]} {world_pos[1]} {world_pos[2]}
+      contactMaterial "ball"
+      children [
+        Shape {{
+          geometry Sphere {{
+            radius {sphere_radius}
+          }}
+          appearance Appearance {{
+            material Material {{
+              diffuseColor {r} {g} {b}
+            }}
+          }}
+        }}
+      ]
+      boundingObject Sphere {{
+        radius {sphere_radius}
+      }}
+      physics Physics {{
+        mass 0.01
+        density -1
+      }}
+    }}
+    """
+    root = supervisor.getRoot()
+    children_field = root.getField("children")
+    children_field.importMFNodeFromString(-1, sphere_string)
+
+def create_trajectory_point(pos):
+    """
+    在pos位置新增一個小球作為拋物線軌跡點，回傳DEF名稱。
+    用Transform持有Shape，僅作視覺標記，不影響物理。
+    """
+    def_name = generate_valid_def_name("TrajectoryPt")
+    sphere_string = f"""
+    DEF {def_name} Transform {{
+      translation {pos[0]} {pos[1]} {pos[2]}
+      children [
+        Shape {{
+          geometry Sphere {{
+            radius {TRAJECTORY_POINT_RADIUS}
+          }}
+          appearance Appearance {{
+            material Material {{
+              diffuseColor 1 0.7 0
+              transparency 0.3
+            }}
+          }}
+        }}
+      ]
+    }}
+    """
+    root = supervisor.getRoot()
+    children_field = root.getField("children")
+    children_field.importMFNodeFromString(-1, sphere_string)
+    return def_name
+
+def delete_trajectory_points():
+    """刪除所有軌跡點"""
+    global trajectory_points
+    for _, def_name in trajectory_points:
+        node = supervisor.getFromDef(def_name)
+        if node:
+            node.remove()
+    trajectory_points.clear()
+
+def create_static_sphere(supervisor, x, y, z):
+    global waiting_ball_def, waiting_ball_info
+    def_name = generate_valid_def_name()
+    waiting_ball_def = def_name
+    r, g, b = generate_random_color()
+    world_pos = youbot_local_to_world((x, y, z))
+    waiting_ball_info = (world_pos, r, g, b)
+    create_static_ball(def_name, world_pos, r, g, b)
+
+def activate_dynamic_ball():
+    global waiting_ball_def, waiting_ball_info
+    if waiting_ball_def is None or waiting_ball_info is None:
+        return
+    ball_node = supervisor.getFromDef(waiting_ball_def)
+    if ball_node is not None:
+        ball_node.remove()
+        supervisor.step(int(supervisor.getBasicTimeStep()))
+    world_pos, r, g, b = waiting_ball_info
+    create_dynamic_ball(waiting_ball_def, world_pos, r, g, b)
+    waiting_ball_def = None
+    waiting_ball_info = None
+
+def is_ball_landed(pos, threshold_z=0.13):
+    """當球z接近地面時視為落地"""
+    return pos[2] &lt; threshold_z
+
+print("按 A 產生一顆靜止球，按 M 讓球變 dynamic 可擊出（最多只有5個軌跡點跟著球跑，球落地後軌跡自動消失）")
+
+while supervisor.step(timestep) != -1:
+    key = keyboard.getKey()
+    current_time = time.time()
+    # 產生球
+    if key == ord('A') and (current_time - last_key_time &gt;= debounce_time):
+        if waiting_ball_def is None:
+            create_static_sphere(supervisor, *default_feed_pos)
+            current_tracked_def = waiting_ball_def
+            delete_trajectory_points()  # 新球產生時清除舊軌跡
+        else:
+            print("還有一顆球等待擊出，請先擊出再產生新球。")
+        last_key_time = current_time
+    # 讓球變動態
+    if key == ord('M') and (current_time - last_key_time &gt;= debounce_time):
+        activate_dynamic_ball()
+        last_key_time = current_time
+
+    # 拋物線軌跡追蹤
+    if current_tracked_def is not None:
+        ball_node = supervisor.getFromDef(current_tracked_def)
+        if ball_node is not None:
+            pos = ball_node.getPosition()
+            # 每 PRINT_INTERVAL 印座標
+            if current_time - last_print_time &gt;= PRINT_INTERVAL:
+                #print(f"球 {current_tracked_def} 絕對座標: [{pos[0]:.4f}, {pos[1]:.4f}, {pos[2]:.4f}]")
+                last_print_time = current_time
+            # 軌跡點：每隔一段距離才加一個，僅保留5個點
+            if (not trajectory_points) or np.linalg.norm(np.array(pos) - np.array(trajectory_points[-1][0])) &gt; TRAJECTORY_POINT_STEP:
+                def_name = create_trajectory_point(pos)
+                trajectory_points.append((pos, def_name))
+                if len(trajectory_points) &gt; TRAJECTORY_MAX_POINTS:
+                    # 移除最舊的點
+                    _, old_def = trajectory_points.pop(0)
+                    node = supervisor.getFromDef(old_def)
+                    if node:
+                        node.remove()
+            # 若球落地，自動清除軌跡
+            if is_ball_landed(pos):
+                delete_trajectory_points()
+        else:
+            # 球消失，停止追蹤並清除軌跡
+            delete_trajectory_points()
+            current_tracked_def = None</pre>
+<p><a href="/downloads/feed_ball.zip">feed_ball.zip</a></p>
+<ul>
+<li data-end="178" data-start="143">
+<p data-end="178" data-start="145"><code data-end="169" data-start="145">create_static_sphere()</code> → 建立靜止球。</p>
+</li>
+<li data-end="234" data-start="179">
+<p data-end="234" data-start="181"><code data-end="206" data-start="181">activate_dynamic_ball()</code> → 將靜止球刪除再重建為有 Physics 的動態球。</p>
+</li>
+<li data-end="291" data-start="235">
+<p data-end="291" data-start="237"><code data-end="258" data-start="237">current_tracked_def</code> 配合 <code data-end="281" data-start="262">trajectory_points</code> 管理拋物線視覺點。</p>
+</li>
+<li data-end="312" data-start="292">
+<p data-end="312" data-start="294">球落地時清軌跡點、球消失時解除追蹤。</p>
+</li>
+</ul>
+<p>參數與初始化</p>
+<p>HOOP_CENTER = [0.622, -0.103, 0.742838]<br/>BALL_DEF_PATTERN = re.compile(r"Sphere_\d+")<br/>supervisor = Supervisor()<br/>timestep = int(supervisor.getBasicTimeStep())<br/>keyboard = Keyboard()<br/>keyboard.enable(timestep)</p>
+<ul data-end="416" data-start="358">
+<li data-end="374" data-start="358">
+<p data-end="374" data-start="360">設定籃框中心位置（可擴充用）</p>
+</li>
+<li data-end="395" data-start="375">
+<p data-end="395" data-start="377">使用正則表達式找出球的 DEF 名稱</p>
+</li>
+<li data-end="416" data-start="396">
+<p data-end="416" data-start="398">啟用 Webots 監督者與鍵盤控制</p>
+</li>
+</ul>
+<p>核心參數與狀態變數</p>
+<p>sphere_radius = 0.1<br/>TRAJECTORY_POINT_RADIUS = 0.03<br/>TRAJECTORY_POINT_STEP = 0.12<br/>TRAJECTORY_MAX_POINTS = 5</p>
+<ul data-end="617" data-start="568">
+<li data-end="588" data-start="568">
+<p data-end="588" data-start="570">設定球與軌跡點的大小、間距與數量限制</p>
+</li>
+<li data-end="617" data-start="589">
+<p data-end="617" data-start="591">追蹤當前是否有未發射的球、其資訊，以及追蹤的球 ID</p>
+</li>
+</ul>
+<p>工具函式</p>
+<p>def youbot_local_to_world(local_pos):<br/> # 取得 youbot 的位置與朝向後進行座標轉換</p>
+<p>建立球體函式（靜止/動態）</p>
+<p>def create_static_ball(...)<br/>def create_dynamic_ball(...)</p>
+<p>利用 Webots 的 <code data-end="887" data-start="863">importMFNodeFromString</code> 方法在場景中加入球（<code data-end="905" data-start="898">Solid</code>）</p>
+<p>軌跡球建立與移除</p>
+<p>def create_trajectory_point(pos)<br/>def delete_trajectory_points()</p>
+<p>建立小型透明球標示軌跡（<code data-end="1029" data-start="1018">Transform</code> + <code data-end="1039" data-start="1032">Shape</code>），僅視覺效果</p>
+<p>按鍵邏輯與操作</p>
+<p>if key == ord('A') ...</p>
+<p></p>
+<ul>
+<li data-end="1141" data-start="1113">
+<p data-end="1141" data-start="1115">按 <code data-end="1120" data-start="1117">A</code> 鍵產生一顆靜止球（球會出現在機器人上方）</p>
+</li>
+<li data-end="1162" data-start="1142">
+<p data-end="1162" data-start="1144">若還有一顆未擊出的球，不允許產生新球</p>
+</li>
+</ul>
+<p>if key == ord('M') ...</p>
+<ul>
+<li data-end="1162" data-start="1142">
+<p data-end="1162" data-start="1144">按 <code data-end="1209" data-start="1206">M</code> 鍵讓目前靜止球「啟動物理引擎」→ 變成動態球，可以掉落</p>
+</li>
+</ul>
+<p>軌跡追蹤核心邏輯</p>
+<p>if current_tracked_def is not None:<br/> ball_node = supervisor.getFromDef(current_tracked_def)</p>
+<p data-end="1391" data-start="1378">每一個 timestep：</p>
+<ul data-end="1507" data-start="1394">
+<li data-end="1409" data-start="1394">
+<p data-end="1409" data-start="1396">讀取球當前位置 <code data-end="1409" data-start="1404">pos</code></p>
+</li>
+<li data-end="1457" data-start="1412">
+<p data-end="1457" data-start="1414">若距離上一個軌跡點大於 <code data-end="1449" data-start="1426">TRAJECTORY_POINT_STEP</code>，就新增一個新點</p>
+</li>
+<li data-end="1477" data-start="1460">
+<p data-end="1477" data-start="1462">若超過 5 個點，移除最舊的點</p>
+</li>
+<li data-end="1507" data-start="1480">
+<p data-end="1507" data-start="1482">若球落地（z 低於閾值），刪除所有軌跡點，結束追蹤</p>
+</li>
+</ul>
+<p></p>
+<p></p>
+<p></p>
+<p><br/><br/></p>
+<h2>籃框及其輪車、計分程式分析</h2>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Robot, Keyboard
+
+# Constants
+#TIME_STEP = 32  # Simulation time step in milliseconds
+WHEEL_RADIUS = 0.1  # Radius of the wheels in meters (10cm)
+L = 0.471  # Half of the robot's length in meters
+W = 0.376  # Half of the robot's width in meters
+MAX_VELOCITY = 10.0  # Maximum velocity allowed for the wheels
+
+# Initialize the robot
+robot = Robot()
+
+# Get simulation time step
+timestep = int(robot.getBasicTimeStep())
+emitter = robot.getDevice("score_emitter")
+score_to_send = 2  # 每次加分2分，可依實際得分修改
+
+# Get the DistanceSensor device
+sensor = robot.getDevice('sensor')
+sensor.enable(timestep)
+score = 0
+last_score_time = 0
+cooldown = 1.0
+
+# Initialize the keyboard
+keyboard = Keyboard()
+#keyboard.enable(TIME_STEP)
+keyboard.enable(timestep)
+
+
+# Get motor devices
+wheel5 = robot.getDevice("wheel5")  # Front-right wheel
+wheel6 = robot.getDevice("wheel6")  # Front-left wheel
+wheel7 = robot.getDevice("wheel7")  # Rear-right wheel
+wheel8 = robot.getDevice("wheel8")  # Rear-left wheel
+
+# Set motors to velocity control mode
+for wheel in [wheel5, wheel6, wheel7, wheel8]:
+    wheel.setPosition(float('inf'))  # Enable velocity control
+    wheel.setVelocity(0)  # Set initial velocity to 0
+
+def set_wheel_velocity(v1, v2, v3, v4):
+    """Set the velocity of all wheels."""
+    wheel5.setVelocity(v1)
+    wheel6.setVelocity(v2)
+    wheel7.setVelocity(v3)
+    wheel8.setVelocity(v4)
+
+# lookupTable 轉成程式用的格式
+lookup_table = [
+    (1000, 0.00),
+    (620, 0.12),
+    (372, 0.13),
+    (248, 0.14),
+    (186, 0.15),
+    (0, 0.18)
+]
+
+def ad_to_distance(ad_value):
+    # 假設AD值遞減，距離遞增
+    for i in range(len(lookup_table)-1):
+        a0, d0 = lookup_table[i]
+        a1, d1 = lookup_table[i+1]
+        if a1 &lt;= ad_value &lt;= a0:
+            # 線性插值
+            return d0 + (d1 - d0) * (ad_value - a0) / (a1 - a0)
+    # 超出範圍時回傳極值
+    if ad_value &gt; lookup_table[0][0]:
+        return lookup_table[0][1]
+    return lookup_table[-1][1]
+    
+# Main loop
+print("Use 'E', 'X', 'S', 'D' keys to control the robot.")
+print("E: Move forward, X: Move backward, S: Turn left, D: Turn right.")
+print("Press 'Q' to quit.")
+
+#while robot.step(TIME_STEP) != -1:
+while robot.step(timestep) != -1:
+
+    key = keyboard.getKey()  # Read the key pressed
+    # Read DistanceSensor value
+    sensor_value = sensor.getValue()
+    #print(sensor_value)
+    distance = ad_to_distance(sensor_value)
+    current_time = robot.getTime()
+    #print(sensor_value)
+    # Check if the ball blocks the sensor (you may need to adjust the threshold based on your sensor's range)
+    if key == ord('M') or key == ord('m'):
+        print(distance)
+    if key == ord('K') or key == ord('k'):
+        print(distance)
+
+    if distance &lt; 0.11 and (current_time - last_score_time) &gt; cooldown:
+        score +=2
+        print("得分")
+        print(distance)
+        # 假設你偵測到某事件得分時才送出
+        emitter.send(str(score_to_send).encode('utf-8'))
+
+
+    if key == ord('E') or key == ord('e'):
+        # Move forward
+        velocity = MAX_VELOCITY
+        set_wheel_velocity(velocity, velocity, velocity, velocity)
+    elif key == ord('X') or key == ord('x'):
+        # Move backward
+        velocity = -MAX_VELOCITY
+        set_wheel_velocity(velocity, velocity, velocity, velocity)
+    elif key == ord('D') or key == ord('d'):
+        # Turn right
+        velocity = MAX_VELOCITY
+        set_wheel_velocity(-velocity, velocity, -velocity, velocity)
+    elif key == ord('S') or key == ord('s'):
+        # Turn left
+        velocity = MAX_VELOCITY
+        set_wheel_velocity(velocity, -velocity, velocity, -velocity)
+    elif key == ord('Q') or key == ord('q'):
+        # Quit the program
+        print("Exiting...")
+        break
+    else:
+        # Stop the wheels when no key is pressed
+        set_wheel_velocity(0, 0, 0, 0)</pre>
+<p><a href="/downloads/stand_controller.zip">stand_controller.zip</a></p>
+<p>初始化區</p>
+<p>robot = Robot()<br/>timestep = int(robot.getBasicTimeStep())</p>
+<p></p>
+<ul>
+<li data-end="394" data-start="366">
+<p data-end="394" data-start="368"><code data-end="375" data-start="368">robot</code> 是 Webots 控制器的核心物件。</p>
+</li>
+<li data-end="417" data-start="395">
+<p data-end="417" data-start="397"><code data-end="407" data-start="397">timestep</code> 是模擬的時間間隔。</p>
+</li>
+</ul>
+<p>設備取得與啟用</p>
+<p>emitter = robot.getDevice("score_emitter")<br/>sensor = robot.getDevice('sensor')<br/>sensor.enable(timestep)</p>
+<p></p>
+<ul>
+<li data-end="589" data-start="559">
+<p data-end="589" data-start="561"><code data-end="576" data-start="561">score_emitter</code>：用來傳送得分的通訊裝置。</p>
+</li>
+<li data-end="621" data-start="590">
+<p data-end="621" data-start="592"><code data-end="600" data-start="592">sensor</code>：距離感測器，測量前方是否有物體（如球）。</p>
+</li>
+</ul>
+<p>控制輪子馬達</p>
+<p>wheel5 = robot.getDevice("wheel5") # 前右輪<br/>wheel6 = robot.getDevice("wheel6") # 前左輪<br/>wheel7 = robot.getDevice("wheel7") # 後右輪<br/>wheel8 = robot.getDevice("wheel8") # 後左輪</p>
+<p></p>
+<ul>
+<li data-end="857" data-start="828">
+<p data-end="857" data-start="830">這些是輪子馬達，命名方式符合 Webots 預設定義。</p>
+</li>
+<li data-end="886" data-start="858">
+<p data-end="886" data-start="860">之後會用 <code data-end="880" data-start="865">setVelocity()</code> 控制移動。</p>
+</li>
+</ul>
+<p>鍵盤控制說明</p>
+<p>keyboard = Keyboard()<br/>keyboard.enable(timestep)</p>
+<p>啟用鍵盤輸入，讓使用者透過鍵盤操控。</p>
+<p>感測器轉距離的 lookup 表</p>
+<p>lookup_table = [<br/> (1000, 0.00),<br/> (620, 0.12),<br/> ...<br/>]</p>
+<p></p>
+<ul>
+<li data-end="1133" data-start="1104">
+<p data-end="1133" data-start="1106">感測器回傳的是「AD 值」（類比值），不是公分或公尺。</p>
+</li>
+<li data-end="1187" data-start="1134">
+<p data-end="1187" data-start="1136"><code data-end="1162" data-start="1136">ad_to_distance(ad_value)</code> 函數將 AD 值轉換為實際距離（透過線性插值）。</p>
+</li>
+</ul>
+<p>主迴圈：偵測 + 操控</p>
+<p>while robot.step(timestep) != -1:</p>
+<p data-end="1273" data-start="1265">每次 step：</p>
+<ul data-end="1362" data-start="1274">
+<li data-end="1300" data-start="1274">
+<p data-end="1300" data-start="1276">檢查鍵盤按鍵 → 控制移動（E/X/S/D）</p>
+</li>
+<li data-end="1328" data-start="1301">
+<p data-end="1328" data-start="1303">讀取距離感測器 → 如果太近且冷卻結束，就得分</p>
+</li>
+<li data-end="1347" data-start="1329">
+<p data-end="1347" data-start="1331">按 <code data-end="1340" data-start="1335">M/K</code> 顯示目前距離</p>
+</li>
+<li data-end="1362" data-start="1348">
+<p data-end="1362" data-start="1350">按 <code data-end="1357" data-start="1354">Q</code> 離開模擬</p>
+</li>
+</ul>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p>得分邏輯</p>
+<p>if distance &lt; 0.11 and (current_time - last_score_time) &gt; cooldown:</p>
+<p data-end="1512" data-start="1469">若感測距離小於 0.11 公尺（表示前方有球），而且距離上次得分已經過了 1 秒，則：</p>
+<ul data-end="1566" data-start="1515">
+<li data-end="1532" data-start="1515">
+<p data-end="1532" data-start="1517">加分（此處預設每次加 2 分）</p>
+</li>
+<li data-end="1566" data-start="1535">
+<p data-end="1566" data-start="1537">透過 emitter 傳送 <code data-end="1566" data-start="1551">score_to_send</code></p>
+</li>
+</ul>
+<p><code data-end="1566" data-start="1551">鍵盤控制對照</code></p>
+<p><code data-end="1566" data-start="1551">E前進</code></p>
+<p><code data-end="1566" data-start="1551">X後退</code></p>
+<p><span face="monospace" style="font-family: monospace;">D向右</span></p>
+<p><span face="monospace" style="font-family: monospace;">S向左</span></p>
+<p><span face="monospace" style="font-family: monospace;">M/K印出目前距離</span></p>
+<p><span face="monospace" style="font-family: monospace;">Q結束模擬</span></p>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from controller import Supervisor
+
+SEGMENTS = [
+    [1,1,1,1,1,1,0], # 0
+    [0,1,1,0,0,0,0], # 1
+    [1,1,0,1,1,0,1], # 2
+    [1,1,1,1,0,0,1], # 3
+    [0,1,1,0,0,1,1], # 4
+    [1,0,1,1,0,1,1], # 5
+    [1,0,1,1,1,1,1], # 6
+    [1,1,1,0,0,0,0], # 7
+    [1,1,1,1,1,1,1], # 8
+    [1,1,1,1,0,1,1], # 9
+]
+DIGIT_MATERIALS = [
+    ['a3mat', 'b3mat', 'c3mat', 'd3mat', 'e3mat', 'f3mat', 'g3mat'], # 百
+    ['a2mat', 'b2mat', 'c2mat', 'd2mat', 'e2mat', 'f2mat', 'g2mat'], # 十
+    ['a1mat', 'b1mat', 'c1mat', 'd1mat', 'e1mat', 'f1mat', 'g1mat'], # 個
+]
+ON_COLOR = [0, 1, 0]
+OFF_COLOR = [0.05, 0.05, 0.05]
+
+def set_digit(supervisor, digit_index, value):
+    segs = SEGMENTS[value]
+    for i, seg_on in enumerate(segs):
+        mat_node = supervisor.getFromDef(DIGIT_MATERIALS[digit_index][i])
+        if mat_node:
+            mat_node.getField('diffuseColor').setSFColor(ON_COLOR if seg_on else OFF_COLOR)
+        else:
+            print(f"找不到 {DIGIT_MATERIALS[digit_index][i]} 這個DEF")
+
+def set_display(supervisor, value):
+    value = max(0, min(999, int(value)))
+    h = value // 100
+    t = (value // 10) % 10
+    u = value % 10
+    set_digit(supervisor, 0, h)
+    set_digit(supervisor, 1, t)
+    set_digit(supervisor, 2, u)
+
+supervisor = Supervisor()
+timestep = int(supervisor.getBasicTimeStep())
+
+score = 0
+receiver = supervisor.getDevice("score_receiver")
+receiver.enable(timestep)
+
+while supervisor.step(timestep) != -1:
+    while receiver.getQueueLength() &gt; 0:
+        data = receiver.getString()
+        if data.isdigit():
+            try:
+                received_score = int(data)
+                score += received_score
+                print(f"收到得分訊息: +{received_score}, 總分: {score}")
+            except Exception as e:
+                print("訊息格式錯誤:", e)
+        receiver.nextPacket()
+    set_display(supervisor, score)</pre>
+<p><a href="/downloads/counter_supervisor.zip">counter_supervisor.zip</a></p>
+<ul>
+<li data-end="150" data-start="113">
+<p data-end="150" data-start="115">接收來自其他控制器（例如剛剛那台機器人）發送過來的 <strong data-end="149" data-start="141">得分訊息</strong>。</p>
+</li>
+<li data-end="167" data-start="151">
+<p data-end="167" data-start="153">解析訊息後，把得分累加起來。</p>
+</li>
+<li data-end="215" data-start="168">
+<p data-end="215" data-start="170">然後根據目前總分，控制三個 <strong data-end="199" data-start="184">7 段顯示器的材質顏色</strong>，呈現出目前分數（0~999）。</p>
+</li>
+</ul>
+<p>DIGIT_MATERIALS = [<br/> ['a3mat', ..., 'g3mat'], # 百位<br/> ['a2mat', ..., 'g2mat'], # 十位<br/> ['a1mat', ..., 'g1mat'], # 個位<br/>]</p>
+<p data-end="681" data-start="598">這表示三個數字的 7 段顯示器，每一段在 Webots 世界中的 <strong data-end="641" data-start="631">DEF 名稱</strong><br data-end="644" data-start="641"/> 例如「百位數的 a 段」是 <code data-end="665" data-start="658">a3mat</code>，會對應到場景中一段特定的材質。</p>
+<p data-end="681" data-start="598">def set_digit(supervisor, digit_index, value):<br/> ...</p>
+<p data-end="839" data-start="783">這個函數用來「控制某一位數字（百／十／個）要顯示什麼數字」，它會根據 <code data-end="828" data-start="818">SEGMENTS</code> 來打開／關掉那幾段。</p>
+<ul data-end="918" data-start="841">
+<li data-end="866" data-start="841">
+<p data-end="866" data-start="843"><code data-end="860" data-start="843">digit_index = 0</code>: 控制百位</p>
+</li>
+<li data-end="892" data-start="867">
+<p data-end="892" data-start="869"><code data-end="886" data-start="869">digit_index = 1</code>: 控制十位</p>
+</li>
+<li data-end="918" data-start="893">
+<p data-end="918" data-start="895"><code data-end="912" data-start="895">digit_index = 2</code>: 控制個位</p>
+</li>
+</ul>
+<p data-end="982" data-start="920">內部用 <code data-end="941" data-start="924">getFromDef(...)</code> 來抓材質節點，然後把 <code data-end="967" data-start="953">diffuseColor</code> 設成亮（綠色）或暗（灰色）。</p>
+<p data-end="982" data-start="920">def set_display(supervisor, value):<br/> ...</p>
+<p data-end="982" data-start="920">這是主函數，會把 0~999 的整數分成三位數來呼叫 <code data-end="1113" data-start="1102">set_digit</code>，更新整個顯示器。</p>
+<p data-end="982" data-start="920">supervisor = Supervisor()<br/>...<br/>receiver = supervisor.getDevice("score_receiver")</p>
+<p data-end="982" data-start="920">這是 Webots 的 supervisor 控制器初始化，並啟用一個 <strong data-end="1300" data-start="1285">receiver 裝置</strong>，用來接收得分。</p>
+<p data-end="982" data-start="920">while supervisor.step(timestep) != -1:<br/> while receiver.getQueueLength() &gt; 0:<br/> ...</p>
+<p data-end="1453" data-start="1434">每個模擬步驟都檢查有沒有新的資料進來：</p>
+<ul data-end="1516" data-start="1455">
+<li data-end="1516" data-start="1455">
+<p data-end="1478" data-start="1457">如果有新的得分數字（如 <code data-end="1472" data-start="1469">2</code>、<code data-end="1476" data-start="1473">5</code>）：</p>
+<ul data-end="1516" data-start="1481">
+<li data-end="1497" data-start="1481">
+<p data-end="1497" data-start="1483">解析字串為整數，累加到總分。</p>
+</li>
+<li data-end="1516" data-start="1500">
+<p data-end="1516" data-start="1502">更新三位數顯示器的顏色狀態。</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul data-end="1868" data-start="1694">
+<li data-end="1736" data-start="1694">
+<p data-end="1736" data-start="1696">這段程式<strong data-end="1718" data-start="1700">不會產生分數，也不控制機器人</strong>，只負責「接收分數 → 顯示分數」。</p>
+</li>
+<li data-end="1810" data-start="1737">
+<p data-end="1810" data-start="1739">如果要配合上一段程式使用，<strong data-end="1785" data-start="1752">要保證 emitter 對應的 receiver 名稱一致</strong>，像這邊叫 <code data-end="1809" data-start="1791">"score_receiver"</code>。</p>
+</li>
+<li data-end="1868" data-start="1811">
+<p data-end="1868" data-start="1813">如果 7 段顯示器的材質名字對錯了（DEF 名稱沒對上），會顯示 <code data-end="1861" data-start="1846">找不到 XXX 這個DEF</code> 的錯誤訊息。</p>
+</li>
+</ul>
+<p></p>
+<h1>期末總結</h1>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/egTV9KwmTvc?si=q_u2A1r30CydbN-Z" title="YouTube video player" width="560"></iframe></p>
+<p>同樣是收獲良多的一門課，痛苦與收穫成正比，估計就是這門課能讓我保有最深的印象，東西也不會隨便忘記。</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p><h1>Brython</h1>
 <p><button id="add1to100">1 add to 100</button></p>
 <!-- 導入 brython 程式庫 -->
 <p>
