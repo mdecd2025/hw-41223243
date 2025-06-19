@@ -122,9 +122,75 @@ fetch_data()</pre>
 <p>本人IPV6:2001:288:6004:17:fff1:cd25:0:b053</p>
 <p>而靜態網站的端口則使用了8000與8443兩個 不論哪種都能看見靜態網站內容，且內容一致。</p>
 <h2>task4</h2>
-<h2>task5</h2>
-<h2>task6</h2>
-<h1>Homework</h1>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">import requests
+
+# 1. 從網址讀取學員資料（格式為：學號, Github帳號）
+url = "https://mde.tw/list/2b.txt"
+response = requests.get(url)
+lines = response.text.strip().split('\n')
+
+# 2. 建立 Dict: Github帳號 -&gt; 學號
+github_to_student_id = {}
+for line in lines:
+    student_id, github_id = line.strip().split(',')
+    github_to_student_id[github_id] = student_id
+
+# 3. 已有的分組 Github 帳號清單（兩班）
+classA_githubs = {'githubA1', 'githubA2', 'githubA3'}
+classB_githubs = {'githubB1', 'githubB2', 'githubB3'}
+
+all_grouped_githubs = classA_githubs.union(classB_githubs)
+
+# 4. 找出尚未納組的學員
+ungrouped_students = []
+for github_id, student_id in github_to_student_id.items():
+    if github_id not in all_grouped_githubs:
+        ungrouped_students.append((student_id, github_id))
+
+print("尚未納組學員清單：")
+for student_id, github_id in ungrouped_students:
+    print(f"學號: {student_id}, Github: {github_id}")
+
+# 5. 查驗是否有學員加入錯誤的班級組別
+# 例如：若有班級分組清單資料中標註學號，可比對班級是否正確。
+# 假設你有班級資訊字典 student_class = {student_id: 'A' or 'B'}
+# 可比對 student_class 與分組的 github 所屬班級是否一致。
+</pre>
+<p></p>
+<ul>
+<li data-end="138" data-start="53">
+<p data-end="138" data-start="56">從 <a class="" data-end="84" data-start="58" href="https://mde.tw/list/2b.txt" rel="noopener" target="_new">https://mde.tw/list/2b.txt</a> 取得所有學員的學號與 Github 帳號（建立 Dict: key=Github帳號，value=學號）。</p>
+</li>
+<li data-end="165" data-start="139">
+<p data-end="165" data-start="142">已有兩班的已分組學員 Github 帳號清單。</p>
+</li>
+<li data-end="212" data-start="166">
+<p data-end="212" data-start="169">透過比對，找出哪些學員的 Github 帳號尚未納入已分組清單（即「尚未納組」學員）。</p>
+</li>
+<li data-end="249" data-start="213">
+<p data-end="249" data-start="216">可進一步檢查是否有學員的 Github 帳號出現在錯誤的班級組別。</p>
+</li>
+</ul>
+<p></p>
+<p></p>
+<p></p><h2>task5</h2>
+<p>Webots:<span>一款專業的行動機器人模擬軟體套件。它提供了一個快速原型開發環境，讓使用者可以創建具有質量、關節、摩擦係數等物理屬性的 3D 虛擬世界。使用者可以添加簡單的被動物件或稱為移動機器人的主動物件。這些機器人可以採用不同的運動方案（輪式機器人、腿部機器人或飛行機器人）。</span></p>
+<p><span>此外，它們還可以配備各種感測器和執行器設備，例如距離感測器、驅動輪、攝影機、馬達、觸控感測器、發射器、接收器等。最後，使用者可以對每個機器人進行單獨編程，使其表現出所需的行為。 Webots 包含大量的機器人模型和控制器程式範例，以幫助使用者快速上手。</span></p>
+<p><span><span>Webots 還包含許多與真實移動機器人的接口，因此，一旦您的模擬機器人按照預期運行，您就可以將其控製程式轉移到真實的機器人，如 e-puck、DARwIn-OP、Nao 等。可以透過相關係統新增的介面。</span></span></p>
+<p><span><span>使用須知:</span></span></p>
+<p>要編寫自己的機器人控制器，您需要具備 C、C++、Java、Python 或 MATLAB 程式語言的基礎知識。即使您不懂這些語言，仍然可以使用名為 BotStudio 的簡單圖形化程式語言來程式設計 e-puck 和 Hemisson 機器人。<span><span>如果您不想使用 Webots 中提供的現有機器人模型，而是想創建自己的機器人模型，或在模擬環境中添加特殊對象，則需要具備 3D 電腦圖形學和 VRML97 描述語言的基礎知識。這樣，您才能在 Webots 中建立 3D 模型，或從 3D 建模軟體中匯入它們。</span></span></p>
+<p><span><span>Webots is widely used in research and education for mobile robot prototyping, locomotion research, multi-agent systems, adaptive behaviors (AI), teaching, and robot contests. Minimal programming knowledge in C, C++, Java, Python, or MATLAB is needed, while graphical programming is available for some robots. Creating new robot models or environments requires basic 3D graphics and VRML97 knowledge.</span></span></p>
+<p><span><span>Webots 適合用於移動機器人原型設計、機器人運動研究、多機器人群體研究、自適應行為研究、機器人教學與競賽。開發控制程式需要具備基本的 C、C++、Java、Python 或 MATLAB 程式語言知識，也可使用圖形化程式語言（如 BotStudio）操作特定機器人。若要自製機器人模型或特殊環境，則需要基本的 3D 電腦圖學與 VRML97 描述語言知識。</span></span></p><h2>task6</h2>
+<p>Webots 啟動時，同時啟動串流伺服器指令: webotsw --stream</p>
+<p>內建埠號為 1234，由於採用 WebGL2 進行網頁著色，因此在 Windows 環境中使用 Edge 連線至<span> </span><a href="http://localhost:1234/">http://localhost:1234</a> 或<span> </span><a href="http://stream_server_ip:1234/">http://stream_server_ip:1234</a><span> </span>將會較為順暢.</p>
+<p>1.先將ipv6改為事先規範過的個人ipv6，再將自己倉儲中的init.py檔中的ip改為規範的ipv6</p>
+<p>2.開啟webot --stream建立網頁串聯阜號，並開啟個人HW1的模擬</p>
+<p>3.使用http://localhost:1234/index.html</p>
+<p>4.將網址輸入的localhost改為規範的ipv6。</p>
+<p><a href="https://mdecd2025.github.io/hw-41223243/content/Exam3.html">https://mdecd2025.github.io/hw-41223243/content/Exam3.html</a></p>
+<p></p>
+<p></p>
+<p></p><h1>Homework</h1>
 <p>作業 (30%)</p>
 <p>HW1 (5%): <span style="background-color: #ffff00;">建立由 Box 組成的平面四連桿機構 Webots 模擬場景</span></p>
 <p style="padding-left: 30px;">part1:</p>

@@ -143,7 +143,58 @@ img.add_border {
           
         </header>
     <div id="tipue_search_content">task3 << <a href='task3.html'>Previous</a> <a href='task5.html'>Next</a> >> task5<br /><h1>task4</h1>
-<br />task3 << <a href='task3.html'>Previous</a> <a href='task5.html'>Next</a> >> task5</div>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">import requests
+
+# 1. 從網址讀取學員資料（格式為：學號, Github帳號）
+url = "https://mde.tw/list/2b.txt"
+response = requests.get(url)
+lines = response.text.strip().split('\n')
+
+# 2. 建立 Dict: Github帳號 -&gt; 學號
+github_to_student_id = {}
+for line in lines:
+    student_id, github_id = line.strip().split(',')
+    github_to_student_id[github_id] = student_id
+
+# 3. 已有的分組 Github 帳號清單（兩班）
+classA_githubs = {'githubA1', 'githubA2', 'githubA3'}
+classB_githubs = {'githubB1', 'githubB2', 'githubB3'}
+
+all_grouped_githubs = classA_githubs.union(classB_githubs)
+
+# 4. 找出尚未納組的學員
+ungrouped_students = []
+for github_id, student_id in github_to_student_id.items():
+    if github_id not in all_grouped_githubs:
+        ungrouped_students.append((student_id, github_id))
+
+print("尚未納組學員清單：")
+for student_id, github_id in ungrouped_students:
+    print(f"學號: {student_id}, Github: {github_id}")
+
+# 5. 查驗是否有學員加入錯誤的班級組別
+# 例如：若有班級分組清單資料中標註學號，可比對班級是否正確。
+# 假設你有班級資訊字典 student_class = {student_id: 'A' or 'B'}
+# 可比對 student_class 與分組的 github 所屬班級是否一致。
+</pre>
+<p></p>
+<ul>
+<li data-end="138" data-start="53">
+<p data-end="138" data-start="56">從 <a class="" data-end="84" data-start="58" href="https://mde.tw/list/2b.txt" rel="noopener" target="_new">https://mde.tw/list/2b.txt</a> 取得所有學員的學號與 Github 帳號（建立 Dict: key=Github帳號，value=學號）。</p>
+</li>
+<li data-end="165" data-start="139">
+<p data-end="165" data-start="142">已有兩班的已分組學員 Github 帳號清單。</p>
+</li>
+<li data-end="212" data-start="166">
+<p data-end="212" data-start="169">透過比對，找出哪些學員的 Github 帳號尚未納入已分組清單（即「尚未納組」學員）。</p>
+</li>
+<li data-end="249" data-start="213">
+<p data-end="249" data-start="216">可進一步檢查是否有學員的 Github 帳號出現在錯誤的班級組別。</p>
+</li>
+</ul>
+<p></p>
+<p></p>
+<p></p><br />task3 << <a href='task3.html'>Previous</a> <a href='task5.html'>Next</a> >> task5</div>
         
     <!-- footer -->
       <div class="container">
